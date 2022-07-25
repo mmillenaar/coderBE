@@ -7,7 +7,7 @@ class User {
     }
 
     getFullName = () => {
-        return console.log(`${this.name} ${this.surname}`);
+        return `${this.name} ${this.surname}`
     }
 
     addPet = (newPet) => {
@@ -15,7 +15,7 @@ class User {
     }
 
     countPets = () => {
-        return console.log(this.pets.length);
+        return this.pets.length
     }
 
     addBook = (bookName, bookAuthor) => {
@@ -32,7 +32,7 @@ class User {
             bookNames.push(book.name)
         })
 
-        return console.log(bookNames)
+        return bookNames
     }
 }
 
