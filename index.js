@@ -1,4 +1,6 @@
 const { promises: fs } = require('fs')
+const express = require('express')
+const app = express()
 
 class Container {
     constructor(filePath) {
@@ -42,7 +44,12 @@ class Container {
         // filter object corresponding to id
         let filteredContent = fileContent.filter(object => object.id === id)
 
-        return filteredContent
+        if (filteredContent.length === 0) {
+            return null
+        }
+        else {
+            return filteredContent
+        }
     }
 
     async getAll() {
@@ -88,35 +95,53 @@ class Container {
             console.error(err);
         }
     }
+
+    async getRandomProduct() {
+        try {
+            let allProducts = await productList.getAll()
+            let randomIndex = Math.floor(Math.random() * allProducts.length)
+
+            return allProducts[randomIndex]
+        }
+        catch (err) {
+            console.error(err);
+        }
+    }
 }
 
 const productList = new Container('./products.txt')
 
-let products = [
-    {
-        title: 'Escuadra',
-        price: 123.45,
-        thumbnail: 'https://cdn3.iconfinder.com/data/icons/education-209/64/ruler-triangle-stationary-school-256.png',
-        id: 1
-    },
-    {
-        title: 'Calculadora',
-        price: 234.56,
-        thumbnail: 'https://cdn3.iconfinder.com/data/icons/education-209/64/calculator-math-tool-school-256.png',
-        id: 2
-    },
-    {
-        title: 'Globo Terráqueo',
-        price: 345.67,
-        thumbnail: 'https://cdn3.iconfinder.com/data/icons/education-209/64/globe-earth-geograhy-planet-school-256.png',
-        id: 3
-    }
-]
-
-
-
-productList.save(products)
+// productList.save(product)
 // productList.getById(1)
 // productList.getAll()
 // productList.deleteAll()
 // productList.deleteById(2)
+// productList.getRandomProduct()
+
+
+const PORT = process.env.PORT || 8080
+const server = app.listen(PORT, () => {
+    console.log(`Server listening at port: ${server.address().port}`);
+})
+server.on("error", error => console.error(`Error in server ${error}`))
+
+
+app.get('/products', async (req, res) => {
+    try {
+        let allProducts = await productList.getAll()
+        res.send(allProducts)
+    }
+    catch (err) {
+        console.error(err);
+    }
+})
+
+app.get('/randomProduct', async (req, res) => {
+    try {
+        let randomProduct = await productList.getRandomProduct()
+        res.send(randomProduct)
+    }
+    catch (err) {
+        console.error(err);
+    }
+})
