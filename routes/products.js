@@ -1,6 +1,25 @@
-const router = express.Router()
+const router = require('express').Router();
 
-let productList = []
+let productList = [
+    {
+        "title": "Escuadra",
+        "price": 123.45,
+        "thumbnail": "https://cdn3.iconfinder.com/data/icons/education-209/64/ruler-triangle-stationary-school-256.png",
+        "id": 1
+    },
+    {
+        "title": "Calculadora",
+        "price": 234.56,
+        "thumbnail": "https://cdn3.iconfinder.com/data/icons/education-209/64/calculator-math-tool-school-256.png",
+        "id": 2
+    },
+    {
+        "title": "Globo Terráqueo",
+        "price": 345.67,
+        "thumbnail": "https://cdn3.iconfinder.com/data/icons/education-209/64/globe-earth-geograhy-planet-school-256.png",
+        "id": 3
+    }
+]
 
 const save = (product) => {
     let newId
@@ -10,8 +29,8 @@ const save = (product) => {
         const lastId = productList[productList.length - 1].id
         newId = lastId + 1
     }
-    productList.push({ id: newId, ...product })
-    return productList[productList.length -1]
+    productList.push({...product, id: newId})
+    return JSON.stringify(productList[productList.length -1])
 }
 
 const getById = (id) => {
@@ -20,18 +39,18 @@ const getById = (id) => {
         return { error: 'Product not found' }
     }
     else {
-        return filteredProduct
+        return filteredProduct[0]
     }
 }
 
 const deleteById = (id) => {
     const filteredList = productList.filter(object => object.id !== id)
-    if (filteredList.length = productList.length) {
+    if (filteredList.length == productList.length) {
         return { error: 'Product not found' }
     } else {
         productList = filteredList
+        return `Product successfully deleted, your updated product list is: ${JSON.stringify(productList)}`
     }
-    return productList
 }
 
 const deleteAll = () => {
@@ -45,29 +64,36 @@ router.get('/', (req, res) => {
 })
 
 router.get('/:id', (req, res) => {
-    let requestedProduct = productList.getById(parseInt(req.params.id))
+    let requestedProduct = getById(parseInt(req.params.id))
     res.send(requestedProduct)
 })
 
 router.post('/', (req, res) => {
-    let newProduct // TODO: define variable
-    let newProductWithId = productList.save(newProduct)
+    const { title, price, thumbnail } = req.body
+    let newProduct = {
+        title: title,
+        price: price,
+        thumbnail: thumbnail,
+    }
+    let newProductWithId = save(newProduct)
     res.send(newProductWithId)
 })
 
 router.put('/:id', (req, res) => {
-    let modifiedProduct // TODO: define variable
-    let requestedProduct = productList.getById(parseInt(req.params.id))
-    requestedProduct = modifiedProduct
-    res.send(`Product ${requestedProduct} successfully saved`)
+    let requestedProduct = getById(parseInt(req.params.id))
+    const { title, price, thumbnail } = req.body
+    let modifiedProduct = {
+        title: title,
+        price: price,
+        thumbnail: thumbnail,
+        id: requestedProduct.id
+    }
+    res.send(`Product ${JSON.stringify(modifiedProduct)} successfully saved`)
 })
 
-// app.delete('/api/products/:id', async (req, res) => {
-//     try {
-//         await productList.deleteById(parseInt(req.params.id))
-//         res.send(`Product with Id:${req.params.id} successfully deleted`)
-//     }
-//     catch (err) {
-//         console.error(err);
-//     }
-// })
+router.delete('/:id', (req, res) => {
+    let newProductList = deleteById(parseInt(req.params.id))
+    res.send(newProductList)
+})
+
+module.exports = router
