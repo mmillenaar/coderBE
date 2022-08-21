@@ -8,17 +8,19 @@
     </head>
     <body>
         <h2>Product form</h2>
-        <form id="formProducto">
+        <form id="productForm" method="post" action="/api/products">
             <div>
-                <input type="text" id="input-title" name="input-title" placeholder="Title">
+                <input type="text" id="input-title" name="title" placeholder="Title">
             </div>
             <div>
-                <input type="text" id="input-price" name="input-price" placeholder="Price">
+                <input type="text" id="input-price" name="price" placeholder="Price">
             </div>
             <div>
-                <input type="text" id="input-thumbnail" name="input-thumbnail" placeholder="Thumbnail">
+                <input type="text" id="input-thumbnail" name="thumbnail" placeholder="Thumbnail">
+            </div>
+            <div>
+                <input type="submit" value="Add/modify product">
             </div>
         </form>
-        <button>Add/modify product</button>
     </body>
 </html>

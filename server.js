@@ -4,6 +4,7 @@ const router = require('./routes/products')
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use(express.static('public'))
 app.use('/api/products', router)
 
 router.get('/', (req, res) => {
