@@ -1,0 +1,16 @@
+html
+    head
+        title='Data'
+    body
+        h2='Products list'
+        each product of productList
+            ul
+                li=product.title
+                li=product.price
+                img(src=product.thumbnail alt=product.title)
+
+        if emptyList
+            h4='No products found'
+
+        button
+            a(href='/')='Add new product'

@@ -1,15 +1,16 @@
 const express = require('express')
 const app = express()
 const products = require('./routes/products')
-const { engine } = require('express-handlebars')
+// const { engine } = require('express-handlebars')
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static('public'))
 app.use('/api/products', products)
 
-app.engine('handlebars', engine())
-app.set('view engine', 'handlebars')
+// app.engine('handlebars', engine())
+// app.set('view engine', 'handlebars')
+app.set('view engine', 'pug')
 app.set('views', './views')
 
 const PORT = process.env.PORT || 8080
