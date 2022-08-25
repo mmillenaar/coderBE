@@ -10,8 +10,9 @@ app.use('/api/products', products)
 
 // app.engine('handlebars', engine())
 // app.set('view engine', 'handlebars')
-app.set('view engine', 'pug')
-app.set('views', './views')
+// app.set('view engine', 'pug')
+app.set('view engine', 'ejs')
+// app.set('views', './views')
 
 const PORT = process.env.PORT || 8080
 const server = app.listen(PORT, () => {

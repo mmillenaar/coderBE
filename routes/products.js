@@ -63,7 +63,7 @@ router
         if (productList.length === 0) {
             emptyList = true
         }
-        res.render('data.pug', {productList, emptyList})
+        res.render('pages/data', {productList, emptyList})
     })
     .post((req, res) => {
         const { title, price, thumbnail } = req.body
@@ -73,7 +73,7 @@ router
             thumbnail: thumbnail,
         }
         save(newProduct)
-        res.render('data.pug', { productList, emptyList: false })
+        res.render('pages/data', { productList, emptyList: false })
     });
 
 router
