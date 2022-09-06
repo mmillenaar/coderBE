@@ -1,6 +1,6 @@
-const router = require('express').Router();
+const app = require('express')
+const router = app.Router();
 
-let emptyList
 let productList = [
     {
         "title": "Escuadra",
@@ -60,10 +60,9 @@ const deleteAll = () => {
 router
     .route('/')
     .get((req, res) => {
-        if (productList.length === 0) {
-            emptyList = true
-        }
-        res.render('pages/data', {productList, emptyList})
+        // let io = req.app.get('socketio')
+        // io.emit('hi', productList)
+        res.render('data', { productList })
     })
     .post((req, res) => {
         const { title, price, thumbnail } = req.body
@@ -73,7 +72,7 @@ router
             thumbnail: thumbnail,
         }
         save(newProduct)
-        res.render('pages/data', { productList, emptyList: false })
+        res.render('data', { productList })
     });
 
 router
@@ -100,4 +99,5 @@ router
         res.send(newProductList)
     })
 
-module.exports = router
+exports.router = router
+exports.productList = productList

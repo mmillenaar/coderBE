@@ -1,0 +1,20 @@
+<h2> Products List </h2>
+{{#each productList}}
+<ul>
+    <li>{{this.title}}</li>
+    <li>{{this.price}}</li>
+    <img src={{this.thumbnail}} alt={{this.title}}>
+</ul>
+{{/each}}
+{{#unless productList}}
+    <h4>No products found</h4>
+{{/unless}}
+<div id="chat">
+{{#each messages}}
+    <div>
+        <strong style='color:blue'> {{this.email}}</strong>
+        <span style='color:brown'>{{this.date}}: </span>
+        <em style='color:green'> {{this.message}} </em>
+    </div>
+{{/each}}
+</div>
