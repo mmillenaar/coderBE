@@ -48,3 +48,7 @@ socket.on('new-chat-message', messages => {
     }).join(' ')
     document.getElementById('chat').innerHTML = chatHtml
 })
+
+socket.on('hi', message => {
+    console.log(message);
+})

@@ -35,10 +35,6 @@ io.on('connection', socket => {
         })
         io.sockets.emit('new-chat-message', messages)
     })
-
-    // socket.on('hi', message => {
-    //     console.log(message);
-    // })
 })
 
 const PORT = process.env.PORT || 8080
@@ -46,3 +42,5 @@ const server = httpServer.listen(PORT, () => {
     console.log(`Server listening at port: ${httpServer.address().port}`);
 })
 server.on("error", error => console.error(`Error in server ${error}`))
+
+module.exports.app = app

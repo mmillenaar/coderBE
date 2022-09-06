@@ -1,5 +1,6 @@
-const app = require('express')
-const router = app.Router();
+const express = require('express')
+const app = express()
+const router = express.Router();
 
 let productList = [
     {
@@ -60,8 +61,8 @@ const deleteAll = () => {
 router
     .route('/')
     .get((req, res) => {
-        // let io = req.app.get('socketio')
-        // io.emit('hi', productList)
+        let io = req.app.get('socketio')
+        io.emit('hi', productList)
         res.render('data', { productList })
     })
     .post((req, res) => {
