@@ -1,46 +1,40 @@
 const express = require('express')
-const { Server: HttpServer } = require('http')
-const { Server: IOServer } = require('socket.io')
 const products = require('./routes/products')
-const { engine } = require('express-handlebars')
-const { promises: fs } = require('fs')
+const cart = require('./routes/cart')
 
 const app = express()
-const httpServer = new HttpServer(app)
-const io = new IOServer(httpServer)
-app.set('socketio', io)
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use(express.static('public'))
 app.use('/api/products', products.router)
+app.use('/api/cart', cart.router)
 
-app.engine('handlebars', engine())
-app.set('view engine', 'handlebars')
-
-const productList = products.productList
-const messages = []
-
-io.on('connection', socket => {
-    console.log('New client connected');
-
-    // First render
-    socket.emit('firstRender', { productList, messages })
-
-    //Chat
-    socket.on('new-message', message => {
-        messages.push(message)
-        fs.appendFile('chat.txt', JSON.stringify(message), (err) => {
-            err && console.error(err)
-        })
-        io.sockets.emit('new-chat-message', messages)
+// TODO: errors in separate file??
+// Error handler
+app.all('*', (req, res, next) => {
+    const err = new Error('Bad request')
+    err.status = 400
+    err.message = `Route:${req.originalUrl} and method:${req.method} not implemented`
+    next(err)
+})
+app.use((err, req, res, next) => {
+    if (err.message.includes("not found")) {
+        res.status(404)
+        err.status = 404
+    }
+    else {
+        res.status(err.status || 500);
+    }
+    res.json({
+        'error': {
+            status: err.status,
+            message: err.message,
+        }
     })
 })
 
 const PORT = process.env.PORT || 8080
-const server = httpServer.listen(PORT, () => {
-    console.log(`Server listening at port: ${httpServer.address().port}`);
+const server = app.listen(PORT, () => {
+    console.log(`Server listening at port: ${server.address().port}`);
 })
 server.on("error", error => console.error(`Error in server ${error}`))
-
-module.exports.app = app

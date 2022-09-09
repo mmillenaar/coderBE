@@ -1,25 +1,36 @@
-const express = require('express')
-const app = express()
-const router = express.Router();
+const router = require('express').Router();
 
+let isAdmin = true
 let productList = [
     {
+        "id": 1,
+        "timestamp": 1662654279342,
         "title": "Escuadra",
-        "price": 123.45,
+        "description": "aaa",
+        "code": "a",
         "thumbnail": "https://cdn3.iconfinder.com/data/icons/education-209/64/ruler-triangle-stationary-school-256.png",
-        "id": 1
+        "price": 123.45,
+        "stock": 10
     },
     {
+        "id": 2,
+        "timestamp": 1662654279342,
         "title": "Calculadora",
-        "price": 234.56,
+        "description": "bbb",
+        "code": "b",
         "thumbnail": "https://cdn3.iconfinder.com/data/icons/education-209/64/calculator-math-tool-school-256.png",
-        "id": 2
+        "price": 234.56,
+        "stock": 10
     },
     {
+        "id": 3,
+        "timestamp": 1662654279342,
         "title": "Globo Terráqueo",
-        "price": 345.67,
+        "description": "ccc",
+        "code": "c",
         "thumbnail": "https://cdn3.iconfinder.com/data/icons/education-209/64/globe-earth-geograhy-planet-school-256.png",
-        "id": 3
+        "price": 345.67,
+        "stock": 10
     }
 ]
 
@@ -31,74 +42,86 @@ const save = (product) => {
         const lastId = productList[productList.length - 1].id
         newId = lastId + 1
     }
-    productList.push({...product, id: newId})
+    productList.push({id: newId, timestamp: Date.now(), ...product})
     return productList
 }
 const getById = (id) => {
     let productIndex = productList.findIndex(element => element.id == id)
     if (productIndex < 0) {
-        return { error: 'Product not found' }
+        throw new Error(`Product not found`)
     }
     else {
         return productIndex
     }
 }
 const deleteById = (id) => {
-    const filteredList = productList.filter(object => object.id !== id)
+    const filteredList = productList.filter(element => element.id !== id)
     if (filteredList.length == productList.length) {
-        return { error: 'Product not found' }
+        throw new Error(`Product not found`)
     } else {
         productList = filteredList
-        return `Product successfully deleted, your updated product consists of: ${JSON.stringify(productList)}`
+        return productList
     }
 }
-const deleteAll = () => {
-    productList = []
-    return { success: 'All products have been deleted' }
+
+router
+    .route('/:id?')
+    .get((req, res) => {
+        if (req.params.id) {
+            let requestedProductIndex = getById(parseInt(req.params.id))
+            //TODO: JSON.stringify all
+            res.send(productList[requestedProductIndex])
+        }
+        else {
+            res.send(productList)
+        }
+    })
+
+if (isAdmin) {
+    router
+        .route('/')
+        .post((req, res) => {
+            const { title, description, code, thumbnail, price, stock } = req.body
+            let newProduct = {
+                title: title,
+                description: description,
+                code: code,
+                thumbnail: thumbnail,
+                price: JSON.parse(price),
+                stock: JSON.parse(stock)
+            }
+            save(newProduct)
+            res.send(productList)
+        })
+    router
+        .route('/:id')
+        .put((req, res) => {
+            let requestedProductIndex = getById(parseInt(req.params.id))
+            const { title, description, code, thumbnail, price, stock } = req.body
+            productList[requestedProductIndex] = {
+                id: productList[requestedProductIndex].id,
+                timestamp: Date.now(),
+                title: title ? title : productList[requestedProductIndex].title,
+                description: description ? description : productList[requestedProductIndex].description,
+                code: code ? code : productList[requestedProductIndex].code,
+                thumbnail: thumbnail ? thumbnail : productList[requestedProductIndex].thumbnail,
+                price: price ? JSON.parse(price) : productList[requestedProductIndex].price,
+                stock: stock ? JSON.parse(stock) : productList[requestedProductIndex].stock,
+            }
+            res.send(productList)
+        })
+        .delete((req, res) => {
+            let newProductList = deleteById(parseInt(req.params.id))
+            res.send(newProductList)
+        })
 }
 
-
 router
-    .route('/')
-    .get((req, res) => {
-        let io = req.app.get('socketio')
-        io.emit('hi', productList)
-        res.render('data', { productList })
-    })
-    .post((req, res) => {
-        const { title, price, thumbnail } = req.body
-        let newProduct = {
-            title: title,
-            price: price,
-            thumbnail: thumbnail,
-        }
-        save(newProduct)
-        res.render('data', { productList })
-    });
-
-router
-    .route('/:id')
-    .get((req, res) => {
-        let requestedProductIndex = getById(parseInt(req.params.id))
-        res.send(productList[requestedProductIndex])
-    })
-    .put((req, res) => {
-        let requestedProductIndex = getById(parseInt(req.params.id))
-        const newTitle = req.body.title
-        const newPrice = req.body.price
-        const newThumbnail = req.body.thumbnail
-        productList[requestedProductIndex] = {
-            title: newTitle && newTitle,
-            price: newPrice && newPrice,
-            thumbnail: newThumbnail && newThumbnail,
-            id: productList[requestedProductIndex].id
-        }
-        res.send(`Changes saved. Your updated product list consists of: ${JSON.stringify(productList)}`)
-    })
-    .delete((req, res) => {
-        let newProductList = deleteById(parseInt(req.params.id))
-        res.send(newProductList)
+    .use((req, res, next) => {
+        const err = new Error('Forbidden')
+        err.status = 403
+        err.message = `Forbidden method:${req.method} in route:${req.originalUrl}`
+        next(err)
     })
 
-exports.router = router
-exports.productList = productList
+module.exports.router = router
