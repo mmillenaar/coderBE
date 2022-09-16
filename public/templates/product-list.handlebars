@@ -1,16 +1,16 @@
 <h2> Products List </h2>
-{{#each productList}}
+{{#each productsData}}
 <ul>
     <li>{{this.title}}</li>
     <li>{{this.price}}</li>
     <img src={{this.thumbnail}} alt={{this.title}}>
 </ul>
 {{/each}}
-{{#unless productList}}
+{{#unless productsData}}
     <h4>No products found</h4>
 {{/unless}}
 <div id="chat">
-{{#each messages}}
+{{#each chatData}}
     <div>
         <strong style='color:blue'> {{this.email}}</strong>
         <span style='color:brown'>{{this.date}}: </span>

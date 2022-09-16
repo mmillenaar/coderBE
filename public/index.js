@@ -3,12 +3,12 @@ const socket = io.connect()
 //FIRST RENDER
 const useTemplate = async (data) => {
     try {
-        const { productList, messages } = data
+        const { productsData, chatData } = data
         const response = await fetch('templates/product-list.handlebars')
         const template = await response.text()
         const newTemplate = Handlebars.compile(template)
-        const fullProductsHtml = newTemplate({productList, messages})
-        return fullProductsHtml
+        const fullHtml = newTemplate({productsData, chatData})
+        return fullHtml
     }
     catch (err) {
         console.error(err)
@@ -16,8 +16,8 @@ const useTemplate = async (data) => {
 }
 socket.on('firstRender', async (firstData) => {
     try {
-        const productsHtml = await useTemplate(firstData)
-        document.getElementById('productList').innerHTML = productsHtml
+        const html = await useTemplate(firstData)
+        document.getElementById('productList').innerHTML = html
     }
     catch (err) {
         console.error(err)
@@ -47,8 +47,4 @@ socket.on('new-chat-message', messages => {
         )
     }).join(' ')
     document.getElementById('chat').innerHTML = chatHtml
-})
-
-socket.on('hi', message => {
-    console.log(message);
 })
