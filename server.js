@@ -27,28 +27,33 @@ const chatOptions = {
 const productOptions = {
     client: 'mysql',
     connection: {
-        host: 'localhost',
+        host: '127.0.0.1',
         user: 'root',
         password: 'root',
-        database: 'products'
+        database: 'products',
     }
 }
 const chatSQL = new Container('chat', chatOptions)
 const productsSQL = new Container('products', productOptions)
 
 io.on('connection', async socket => {
-    console.log('New client connected');
-    //First render
-    const chatData = await chatSQL.getAll()
-    const productsData = await productsSQL.getAll()
-    socket.emit('firstRender', { productsData, chatData })
+    try {
+        console.log('New client connected');
+        //First render
+        const chatData = await chatSQL.getAll()
+        const productsData = await productsSQL.getAll()
+        socket.emit('firstRender', { productsData, chatData })
 
-    //New chat message
-    socket.on('new-message', async message => {
-        await chatSQL.insert(message)
-        const newChatData = await chatSQL.getAll()
-        io.sockets.emit('new-chat-message', newChatData)
-    })
+        //New chat message
+        socket.on('new-message', async message => {
+            await chatSQL.insert(message)
+            const newChatData = await chatSQL.getAll()
+            io.sockets.emit('new-chat-message', newChatData)
+        })
+    }
+    catch(err) {
+        console.log(err);
+    }
 })
 
 const PORT = process.env.PORT || 8080

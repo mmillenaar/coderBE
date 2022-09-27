@@ -8,7 +8,7 @@ class Container {
 
     async insert(element) {
         try {
-            return this.knex(this.dbName).insert(element)
+            return await this.knex(this.dbName).insert(element)
         }
         catch (err) {
             throw new Error(`Error inserting element: ${err}`)
@@ -16,7 +16,7 @@ class Container {
     }
     async getAll() {
         try {
-            return this.knex(this.dbName).select('*')
+            return await this.knex(this.dbName).select('*')
         }
         catch(err) {
             throw new Error(`Error getting all data: ${err}`)
@@ -24,7 +24,7 @@ class Container {
     }
     async getById(id) {
         try {
-            return this.knex(this.dbName).select('*').where('id', id)
+            return await this.knex(this.dbName).select('*').where('id', id)
         }
         catch(err) {
             throw new Error(`Error getting by id${id}: ${err}`)
@@ -32,7 +32,7 @@ class Container {
     }
     async update(newElement, id) {
         try {
-            return this.knex(this.dbName).where('id', id).update(newElement)
+            return await this.knex(this.dbName).where('id', id).update(newElement)
         }
         catch (err) {
             throw new Error(`Error updating id${id}: ${err}`)
@@ -40,7 +40,7 @@ class Container {
     }
     async deleteById(id) {
         try {
-            return this.knex(this.dbName).delete().where('id', id)
+            return await this.knex(this.dbName).delete().where('id', id)
         }
         catch(err) {
             throw new Error(`Error deleting by id${id}: ${err}`)

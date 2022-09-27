@@ -21,8 +21,16 @@ const Container = require('../DB/Container.js')
 //         "id": 3
 //     }
 // ]
+const validate = (req, res, next) => {
+    if (req.body.title && req.body.price > 0 && req.body.thumbnail) {
+        next()
+    }
+    else {
+        throw new Error('Error: Data not accepted')
+    }
+}
 
-const productsSQL = new Container('products', {client: 'mysql', connection: {host: 'localhost', user: 'root', password: 'root', database: 'products'}})
+const productsSQL = new Container('products', {client: 'mysql', connection: {host: '127.0.0.1', user: 'root', password: 'root', database: 'products'}})
 
 router
     .route('/')
@@ -30,7 +38,7 @@ router
         const productList = await productsSQL.getAll()
         res.render('data', { productList })
     })
-    .post(async (req, res) => {
+    .post(validate, async (req, res) => {
         const { title, price, thumbnail } = req.body
         let newProduct = {
             title: title,
@@ -57,7 +65,7 @@ router
             console.log(err)
         }
     })
-    .put(async (req, res) => {
+    .put(validate, async (req, res) => {
         const newProduct = {
             title: req.body.title,
             price: JSON.parse(req.body.price),
