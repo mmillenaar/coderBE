@@ -1,8 +1,10 @@
 import express from 'express'
+import dotenv from 'dotenv'
 import productsRouter from './routes/products.route.js'
 import cartsRouter from './routes/carts.route.js'
 
 const app = express()
+dotenv.config()
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))

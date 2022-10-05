@@ -9,12 +9,10 @@ export default class FsProductsDao extends FsContainer {
         const allContent = await super.getAll()
         return allContent
     }
-
     async getProductById(id) {
         const requestedProduct = super.getById(parseInt(id))
         return requestedProduct
     }
-
     async saveProduct(product) {
         const { title, description, code, thumbnail, price, stock } = product
         let newProduct = {
@@ -28,7 +26,6 @@ export default class FsProductsDao extends FsContainer {
         let newList = await super.saveObject(newProduct)
         return newList
     }
-
     async modifyProduct(id, modifiedProduct) {
         let requestedProduct = await super.getById(parseInt(id))
         const { title, description, code, thumbnail, price, stock } = modifiedProduct
@@ -45,7 +42,6 @@ export default class FsProductsDao extends FsContainer {
         let modifiedList = await super.modifyObject(requestedProduct)
         return modifiedList
     }
-
     async deleteProductById(id) {
         let newProductsList = super.deleteById(parseInt(id))
         return newProductsList

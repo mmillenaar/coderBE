@@ -9,12 +9,10 @@ export default class FsCartsDao extends FsContainer {
         const allContent = await super.getAll()
         return allContent
     }
-
     async getCartById(id) {
         const requestedCart = await super.getById(parseInt(id))
         return requestedCart
     }
-
     async saveCart(cart) {
         const { products } = cart
         let newCartProducts = {
@@ -23,7 +21,6 @@ export default class FsCartsDao extends FsContainer {
         const newCart = await super.saveObject(newCartProducts)
         return newCart
     }
-
     async modifyCart(id, modifiedCart) {
         const { products } = modifiedCart
         let requestedCart = await super.getById(parseInt(id))
@@ -34,12 +31,10 @@ export default class FsCartsDao extends FsContainer {
         const newCartProducts  = await super.modifyObject(requestedCart)
         return newCartProducts
     }
-
     async deleteCartById(id) {
         let newCartsList = await super.deleteById(parseInt(id))
         return newCartsList
     }
-
     async deleteProductFromCart(cartId, productId) {
         let requestedCart = await super.getById(parseInt(cartId))
         let filteredProducts = requestedCart.cart.filter(element => element.id !== parseInt(productId))

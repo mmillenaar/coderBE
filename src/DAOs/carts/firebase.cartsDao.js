@@ -1,9 +1,8 @@
-import MongoDbContainer from "../../containers/mongoDb.container.js";
-import cartsSchema from "../../models/carts.schema.js";
+import FirebaseContainer from "../../containers/firebase.container.js"
 
-export default class MongoDbCartsDao extends MongoDbContainer {
+export default class FirebaseCartsDao extends FirebaseContainer {
     constructor() {
-        super('carts', cartsSchema)
+        super('carts')
     }
 
     async getAllCarts() {
@@ -19,7 +18,7 @@ export default class MongoDbCartsDao extends MongoDbContainer {
         let newCartProducts = {
             cart: JSON.parse(products)
         }
-        const newCart = await super.saveObject(newCartProducts)
+        const newCart = await super.saveObject({timestamp: Date.now(), ...newCartProducts})
         return newCart
     }
     async modifyCart(id, modifiedCart) {
@@ -29,7 +28,7 @@ export default class MongoDbCartsDao extends MongoDbContainer {
             requestedCart.cart.push(product)
         })
         requestedCart.timestamp = Date.now()
-        const newCartProducts  = await super.modifyObject(requestedCart)
+        const newCartProducts  = await super.modifyObject(id, requestedCart)
         return newCartProducts
     }
     async deleteCartById(id) {
@@ -38,11 +37,11 @@ export default class MongoDbCartsDao extends MongoDbContainer {
     }
     async deleteProductFromCart(cartId, productId) {
         let requestedCart = await super.getById(cartId)
-        let filteredProducts = requestedCart.cart.filter(element => element.id !== productId)
+        let filteredProducts = requestedCart.cart.filter(element => element.id !== parseInt(productId))
         requestedCart.cart.length = 0
         filteredProducts.map(element => requestedCart.cart.push(element))
         requestedCart.timestamp = Date.now()
-        const newCartProducts  = await super.modifyObject(requestedCart)
+        const newCartProducts  = await super.modifyObject(cartId, requestedCart)
         return newCartProducts
     }
 }

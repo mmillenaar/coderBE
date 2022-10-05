@@ -1,9 +1,8 @@
-import MongoDbContainer from "../../containers/mongoDb.container.js";
-import productsSchema from "../../models/products.schema.js";
+import FirebaseContainer from "../../containers/firebase.container.js";
 
-export default class MongoDbProductsDao extends MongoDbContainer {
+export default class FirebaseProductsDao extends FirebaseContainer {
     constructor() {
-        super('products', productsSchema)
+        super('products')
     }
 
     async getAllProducts() {
@@ -17,6 +16,7 @@ export default class MongoDbProductsDao extends MongoDbContainer {
     async saveProduct(product) {
         const { title, description, code, thumbnail, price, stock } = product
         let newProduct = {
+            timestamp: Date.now(),
             title: title,
             description: description,
             code: code,
@@ -31,7 +31,6 @@ export default class MongoDbProductsDao extends MongoDbContainer {
         let requestedProduct = await super.getById(id)
         const { title, description, code, thumbnail, price, stock } = modifiedProduct
         requestedProduct = {
-            id: requestedProduct.id,
             timestamp: Date.now(),
             title: title ? title : requestedProduct.title,
             description: description ? description : requestedProduct.description,
@@ -40,7 +39,7 @@ export default class MongoDbProductsDao extends MongoDbContainer {
             price: price ? JSON.parse(price) : requestedProduct.price,
             stock: stock ? JSON.parse(stock) : requestedProduct.stock,
         }
-        let modifiedList = await super.modifyObject(requestedProduct)
+        let modifiedList = await super.modifyObject(id, requestedProduct)
         return modifiedList
     }
     async deleteProductById(id) {
