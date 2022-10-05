@@ -1,15 +1,14 @@
-const express = require('express')
-const products = require('./routes/products')
-const cart = require('./routes/cart')
+import express from 'express'
+import productsRouter from './routes/products.route.js'
+import cartsRouter from './routes/carts.route.js'
 
 const app = express()
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use('/api/products', products.router)
-app.use('/api/cart', cart.router)
+app.use('/api/products', productsRouter)
+app.use('/api/carts', cartsRouter)
 
-// TODO: errors in separate file??
 // Error handler
 app.all('*', (req, res, next) => {
     const err = new Error('Bad request')
