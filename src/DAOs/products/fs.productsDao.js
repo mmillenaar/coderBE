@@ -14,17 +14,28 @@ export default class FsProductsDao extends FsContainer {
         return requestedProduct
     }
     async saveProduct(product) {
-        const { title, description, code, thumbnail, price, stock } = product
-        let newProduct = {
-            title: title,
-            description: description,
-            code: code,
-            thumbnail: thumbnail,
-            price: JSON.parse(price),
-            stock: JSON.parse(stock)
+        try {
+            const { title, description, code, thumbnail, price, stock } = product
+            if (title && price && stock) {
+                let newProduct = {
+                    title: title,
+                    description: description ? description : '',
+                    code: code ? code : '',
+                    thumbnail: thumbnail ? thumbnail : '',
+                    price: JSON.parse(price),
+                    stock: JSON.parse(stock)
+                }
+                let newList = await super.saveObject(newProduct)
+                return newList
+            }
+            else {
+                throw new Error('Product information missing')
+            }
         }
-        let newList = await super.saveObject(newProduct)
-        return newList
+        catch(err) {
+            err.status = 400
+            throw err
+        }
     }
     async modifyProduct(id, modifiedProduct) {
         let requestedProduct = await super.getById(parseInt(id))

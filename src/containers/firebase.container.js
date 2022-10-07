@@ -18,41 +18,59 @@ export default class FirebaseContainer {
                 return {id: doc.id, ...doc.data()}
             })
             return objects
-        } catch (error) {
-            throw new Error(`Error using getAll(): ${error}`)
+        }
+        catch (err) {
+            throw new Error(`Error accessing database: ${err}`)
         }
     }
     async getById(id) {
         try {
             const doc = await this.collection.doc(id).get();
             const object = doc.data()
-            return { id, ...object }
-        } catch (error) {
-            throw new Error(`Error using getById(): ${error}`)
+            if (!object) {
+                throw new Error(`Id:${id} not found in database`)
+            }
+            else {
+                return { id, ...object }
+            }
+        }
+        catch (err) {
+            err.status = 404
+            throw err
         }
     }
     async saveObject(object) {
         try {
             const savedObject = await this.collection.add(object)
             return this.modifyObject(savedObject.id, object) // so as to have the id incorporated inside the cart
-        } catch (error) {
-            throw new Error(`Error using saveObject(): ${error}`)
+        }
+        catch (err) {
+            throw err
         }
     }
     async modifyObject(id, object) {
         try {
             await this.collection.doc(id).set(object);
             return this.getById(id)
-        } catch (error) {
-            throw new Error(`Error using modifyObject(): ${error}`)
+        }
+        catch (err) {
+            throw err
         }
     }
     async deleteById(id) {
         try {
-            await this.collection.doc(id).delete();
-            return this.getAll()
-        } catch (error) {
-            throw new Error(`Error using deleteById(): ${error}`)
+            const collection = this.getAll()
+            const newCollection = await this.collection.doc(id).delete();
+            if (newCollection.length === collection.length) {
+                throw new Error(`Id:${id} not found in database`)
+            }
+            else {
+                return this.getAll()
+            }
+        }
+        catch (err) {
+            err.status = 404
+            throw err
         }
     }
 }

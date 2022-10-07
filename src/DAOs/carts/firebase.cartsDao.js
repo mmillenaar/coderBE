@@ -14,12 +14,23 @@ export default class FirebaseCartsDao extends FirebaseContainer {
         return requestedCart
     }
     async saveCart(cart) {
-        const { products } = cart
-        let newCartProducts = {
-            cart: JSON.parse(products)
+        try {
+            const { products } = cart
+            if (products) {
+                let newCartProducts = {
+                    cart: JSON.parse(products)
+                }
+                const newCart = await super.saveObject({timestamp: Date.now(), ...newCartProducts})
+                return newCart
+            }
+            else {
+                throw new Error('Cart products information missing')
+            }
         }
-        const newCart = await super.saveObject({timestamp: Date.now(), ...newCartProducts})
-        return newCart
+        catch (err) {
+            err.status = 400
+            throw err
+        }
     }
     async modifyCart(id, modifiedCart) {
         const { products } = modifiedCart

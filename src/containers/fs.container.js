@@ -16,61 +16,69 @@ export default class FsContainer {
         }
     }
     async getById(id) {
-        const fileContent = await this.getAll()
-        let searchedIndex = fileContent.findIndex(element => element.id == id)
-        if (searchedIndex < 0) {
-            throw new Error(`GET: id:${id} not found in ${JSON.stringify(this.filePath)}`)
+        try {
+            const fileContent = await this.getAll()
+            let searchedIndex = fileContent.findIndex(element => element.id == id)
+            if (searchedIndex < 0) {
+                throw new Error(`Id:${id} not found in ${JSON.stringify(this.filePath)}`)
+            }
+            else {
+                return fileContent[searchedIndex]
+            }
         }
-        else {
-            return fileContent[searchedIndex]
+        catch (err) {
+            err.status = 404
+            throw err
         }
     }
     async saveObject(object) {
-        const fileContent = await this.getAll()
-        let newId
-        if (fileContent.length === 0) {
-            newId = 1
-        }
-        else {
-            const lastId = fileContent[fileContent.length - 1].id
-            newId = lastId + 1
-        }
-        fileContent.push({ id: newId, timestamp: Date.now(), ...object })
         try {
+            const fileContent = await this.getAll()
+            let newId
+            if (fileContent.length === 0) {
+                newId = 1
+            }
+            else {
+                const lastId = fileContent[fileContent.length - 1].id
+                newId = lastId + 1
+            }
+            fileContent.push({ id: newId, timestamp: Date.now(), ...object })
             await fs.writeFile(this.filePath, JSON.stringify(fileContent, null, 2))
+            return fileContent
         }
-        catch {
-            throw new Error('Error while saving data');
+        catch (err) {
+            throw err
         }
-        return fileContent
     }
     async modifyObject(modifiedObject) {
-        const fileContent = await this.getAll()
-        const objectIndex = fileContent.findIndex(element => element.id === modifiedObject.id)
-        fileContent[objectIndex] = {...modifiedObject}
         try {
+            const fileContent = await this.getAll()
+            const objectIndex = fileContent.findIndex(element => element.id === modifiedObject.id)
+            fileContent[objectIndex] = { ...modifiedObject }
             await fs.writeFile(this.filePath, JSON.stringify(fileContent, null, 2))
+            return fileContent[objectIndex]
         }
-        catch {
-            throw new Error('Error while saving data');
+        catch(err) {
+            throw err
         }
-        return fileContent[objectIndex]
     }
     async deleteById(id) {
-        const fileContent = await this.getAll()
-        const filteredList = fileContent.filter(element => element.id !== id)
-        if (filteredList.length == fileContent.length) {
-            throw new Error(`DELETE: id:${id} not found in ${JSON.stringify(this.filePath)}`)
-        } else {
-            fileContent.length = 0
-            filteredList.map(element => fileContent.push(element))
-        }
         try {
+            const fileContent = await this.getAll()
+            const filteredList = fileContent.filter(element => element.id !== id)
+            if (filteredList.length == fileContent.length) {
+                throw new Error(`Id:${id} not found in ${JSON.stringify(this.filePath)}`)
+            } else {
+                fileContent.length = 0
+                filteredList.map(element => fileContent.push(element))
+            }
             await fs.writeFile(this.filePath, JSON.stringify(fileContent, null, 2))
+
+            return fileContent
         }
-        catch {
-            throw new Error('Error while saving data');
+        catch (err) {
+            err.status = 404
+            throw err;
         }
-        return fileContent
     }
 }

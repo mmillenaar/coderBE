@@ -18,16 +18,22 @@ export default class MongoDbContainer {
         try {
             const allContent = await this.collection.find().select('-__v')
             return allContent
-        } catch (error) {
-            throw new Error(`Error using getAll(): ${error}`)
+        } catch (err) {
+            throw new Error(`Error accessing database: ${err}`)
         }
     }
     async getById(id) {
         try {
             const foundObject = await this.collection.findById(id).select('-__v')
-            return foundObject
-        } catch (error) {
-            throw new Error(`Error using getById(): ${error}`)
+            if (!foundObject) {
+                throw new Error()
+            }
+            else {
+                return foundObject
+            }
+        } catch (err) {
+            err.status = 404
+            throw err
         }
     }
     async saveObject(object) {
@@ -35,24 +41,26 @@ export default class MongoDbContainer {
             const newObjectSchema = new this.collection(object)
             const savedObject = await newObjectSchema.save()
             return this.getById(savedObject._id)
-        } catch (error) {
-            throw new Error(`Error using saveObject(): ${error}`)
+        } catch (err) {
+            throw err
         }
     }
     async modifyObject(object) {
         try {
             await this.collection.replaceOne({ _id: object.id }, object)
             return this.getById(object.id)
-        } catch (error) {
-            throw new Error(`Error using modifyObject(): ${error}`)
+        } catch (err) {
+            throw err
         }
     }
     async deleteById(id) {
         try {
-            await this.collection.deleteOne({ _id: id })
+            const aaa = await this.collection.deleteOne({ _id: id })
+            console.log(aaa);
             return this.getAll()
-        } catch (error) {
-            throw new Error(`Error using deleteById(): ${error}`)
+        } catch (err) {
+            err.status = 404
+            throw err
         }
     }
 }

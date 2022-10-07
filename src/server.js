@@ -19,23 +19,14 @@ app.all('*', (req, res, next) => {
     next(err)
 })
 app.use((err, req, res, next) => {
-    if (err.message.includes("not found")) {
-        res.status(404)
-        err.status = 404
+    if (!err.status) {
+        err.status = 500
     }
-    else {
-        res.status(err.status || 500);
-    }
-    res.json({
-        'error': {
-            status: err.status,
-            message: err.message,
-        }
-    })
+    res.status(err.status).send(err.message)
 })
 
 const PORT = process.env.PORT || 8080
 const server = app.listen(PORT, () => {
     console.log(`Server listening at port: ${server.address().port}`);
 })
-server.on("error", error => console.error(`Error in server ${error}`))
+server.on("error", error => console.error(`Error in server: ${error}`))
