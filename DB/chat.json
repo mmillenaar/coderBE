@@ -1,0 +1,14 @@
+[
+    {
+        "id": 1,
+        "email": "mati_millenaar@hotmail.com",
+        "date": "2022-10-13T05:48:09.293Z",
+        "message": "hola"
+    },
+    {
+        "id": 2,
+        "email": "admin@admin.com",
+        "date": "2022-10-13T05:48:19.995Z",
+        "message": "hola"
+    }
+]
