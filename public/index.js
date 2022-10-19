@@ -1,23 +1,31 @@
 const socket = io.connect()
 
 //FIRST RENDER
-const useTemplate = async (data) => {
+const useTemplate = async (data, templateFilename) => {
     try {
-        const { productsData, chatData } = data
-        const response = await fetch('templates/product-list.handlebars')
+        const response = await fetch(`templates/${templateFilename}`)
         const template = await response.text()
         const newTemplate = Handlebars.compile(template)
-        const fullHtml = newTemplate({productsData, chatData})
-        return fullHtml
+        const newHtml = newTemplate(data)
+        return newHtml
     }
     catch (err) {
         console.error(err)
     }
 }
-socket.on('firstRender', async (firstData) => {
+socket.on('firstProductsRender', async (productsData) => {
     try {
-        const html = await useTemplate(firstData)
+        const html = await useTemplate({productsData}, 'product-list.handlebars')
         document.getElementById('productList').innerHTML = html
+    }
+    catch (err) {
+        console.error(err)
+    }
+})
+socket.on('firstChatRender', async (chatData) => {
+    try {
+        const html = await useTemplate({chatData}, 'chat.handlebars')
+        document.getElementById('chat').innerHTML = html
     }
     catch (err) {
         console.error(err)
