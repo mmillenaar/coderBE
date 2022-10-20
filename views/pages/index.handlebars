@@ -9,6 +9,14 @@
         <title>Document</title>
     </head>
     <body>
+        <div class="login-greetings">
+            <h1>
+                Welcome {{name}}!
+                <button onclick="location.href='/logout'">
+                    Log out
+                </button>
+            </h1>
+        </div>
         <h2>Product form</h2>
         <form id="productForm" method="post" action="/api/products">
             <div>
@@ -24,9 +32,6 @@
                 <input type="submit" value="Add product">
             </div>
         </form>
-        <!-- <button>
-            <a href="/api/products">See all products</a>
-        </button> -->
         <div id="productList"></div>
         <h2>Chat</h2>
         <div id="chat"></div>
