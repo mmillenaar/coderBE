@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Register</title>
 </head>
 <body>
     <div class="container">
-        <h1>User login</h1>
+        <h1>Register user</h1>
         <br>
-        <form action="/login" method="post" autocomplete="off">
+        <form action="/register" method="post" autocomplete="off">
             <div class="form-group">
+                <label for="name">Enter your name</label>
+                <input id="name" class="form-control" type="text" name="name" required>
                 <label for="email">Enter your email</label>
                 <input id="email" class="form-control" type="email" name="email" required>
                 <label for="password">Enter your password</label>
@@ -19,8 +21,8 @@
             </div>
             <button>Send</button>
         </form>
-        <h2>Not registered? Please do so
-            <a href="/register">
+        <h2>Already registered? Please login
+            <a href="/login">
                 <button>HERE</button>
             </a>
         </h2>

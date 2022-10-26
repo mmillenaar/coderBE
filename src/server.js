@@ -1,7 +1,6 @@
 import express from 'express'
 import session from 'express-session'
-import MongoStore from 'connect-mongo'
-import path from 'path'
+import dotenv from 'dotenv'
 
 import { Server as HttpServer } from 'http'
 import { Server as Socket } from 'socket.io'
@@ -11,11 +10,13 @@ import productsApiRouter from './routes/api/products.js'
 import productsTestApiRouter from './routes/api/products-test.js'
 import socketMessagesConfiguration from './routes/sockets/messages.ws.js'
 import socketProductsConfiguration from './routes/sockets/products.ws.js'
-import sessionRouter from './routes/web/session.js'
 import sessionAuth from './middlewares/sessionAuth.js'
+import { passportMiddleware, passportSessionHandler } from './middlewares/passport.js'
+import { getFailedLogin, getFailedRegister, getLogin, getLogout, getRegister, getRoot, postLogin, postRegister } from './controllers.js'
 
 
 const app = express()
+dotenv.config()
 const httpServer = new HttpServer(app)
 const io = new Socket(httpServer)
 
@@ -30,21 +31,30 @@ app.engine('handlebars', engine())
 app.set('view engine', 'handlebars')
 
 app.use(session({
-    store: MongoStore.create({
-        mongoUrl: 'mongodb+srv://root:root@cluster0.akmpqcq.mongodb.net/?retryWrites=true&w=majority',
-        mongoOptions: {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        },
-    }),
     secret: 'holaFedeeee',
     resave: false,
     saveUninitialized: false,
     rolling: true,
     cookie: {
-        maxAge: 60000
+        maxAge: 600000
     }
 }))
+app.use(passportMiddleware)
+app.use(passportSessionHandler)
+
+// ROOT
+app.get('/', sessionAuth, getRoot)
+//LOGIN
+app.get('/login', getLogin)
+app.post('/login', postLogin)
+app.get('/failedlogin', getFailedLogin)
+//REGISTER
+app.get('/register', getRegister)
+app.post('/register', postRegister)
+app.get('/failedregister', getFailedRegister)
+//LOGOUT
+app.get('/logout', getLogout)
+
 
 io.on('connection', async socket => {
     try {
@@ -55,12 +65,6 @@ io.on('connection', async socket => {
     catch(err) {
         console.log(err);
     }
-})
-
-app.use(sessionRouter)
-
-app.get('/', sessionAuth, (req, res) => {
-    res.render(path.resolve('./views/pages/index.handlebars'), {name: req.session?.name})
 })
 
 const PORT = process.env.PORT || 8080
