@@ -15,7 +15,7 @@ export const getLogin = (req, res) => {
 }
 export const postLogin = passport.authenticate('login', {
     successRedirect: '/',
-    failureRedirect: '/failedlogin'
+    failureRedirect: '/login/failed'
 })
 export const getFailedLogin = (req, res) => {
     res.sendFile(path.resolve('./views/pages/failedlogin.html'))
@@ -25,7 +25,7 @@ export const getRegister = (req, res) => {
 }
 export const postRegister = passport.authenticate('register', {
     successRedirect: '/',
-    failureRedirect: '/failedregister'
+    failureRedirect: '/register/failed'
 })
 export const getFailedRegister = (req, res) => {
     res.sendFile(path.resolve('./views/pages/failedregister.html'))

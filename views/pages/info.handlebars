@@ -1,0 +1,16 @@
+<h1>Process info:</h1>
+<ul>
+    <li> Entry arguments:
+        <ul>
+            {{#each processData.entryArguments}}
+                <li>{{this.[0]}}: {{this.[1]}}</li>
+            {{/each}}
+        </ul>
+    </li>
+    <li>Execution path: {{processData.execPath}}</li>
+    <li>OS: {{processData.OS}}</li>
+    <li>Process Id: {{processData.processId}}</li>
+    <li>Node version: {{processData.nodeVersion}}</li>
+    <li>Folder: {{processData.folder}}</li>
+    <li>Memory usage: {{processData.memoryUsage}}</li>
+</ul>
