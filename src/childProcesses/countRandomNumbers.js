@@ -4,13 +4,13 @@ const randomNumber = () => {
 
 const countRandomNumbers = (quantity) => {
     let numbers = []
-    for (let i = 0; i < quantity; i++) {
-        numbers.push(randomNumber())
-    }
+    // for (let i = 0; i < quantity; i++) {
+    //     numbers.push(randomNumber())
+    // }
     const numberCount = {}
-    numbers.forEach(number => {
-        numberCount[number] = numberCount[number] ? numberCount[number]++ : 1
-    })
+    // numbers.forEach(number => {
+    //     numberCount[number] = numberCount[number] ? numberCount[number]++ : 1
+    // })
     return numberCount
 }
 

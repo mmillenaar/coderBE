@@ -3,6 +3,8 @@ import session from 'express-session'
 import dotenv from 'dotenv'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
+import cluster from 'cluster'
+import os from 'os'
 
 import { Server as HttpServer } from 'http'
 import { Server as Socket } from 'socket.io'
@@ -28,7 +30,7 @@ const io = new Socket(httpServer)
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use(express.static('public'))
+// app.use(express.static('public'))
 
 
 app.engine('handlebars', engine())
@@ -69,15 +71,42 @@ app.use(homeRouter)
 const args = yargs(hideBin(process.argv))
 args
     .default({
-        port: 8080
+        port: 8080,
+        mode: 'fork',
     })
     .alias({
-        p: 'port'
+        p: 'port',
+        m: 'mode'
     })
     .argv
 
 const PORT = args.argv.port
-const server = httpServer.listen(PORT, () => {
-    console.log(`Server listening at port: ${httpServer.address().port}`);
-})
-server.on("error", error => console.error(`Error in server ${error}`))
+const createServer = (port) => {
+    const server = httpServer.listen(port, () => {
+        console.log(`Server listening at port: ${httpServer.address().port}`)
+    })
+    server.on("error", error => console.error(`Error in server ${error}`))
+}
+
+if (args.argv.mode === 'cluster') {
+    if (cluster.isPrimary) {
+        console.log(`${args.argv.mode} mode`);
+        console.log(`Master ${process.pid} is running`);
+        for (let i = 0; i < os.cpus().length; i++) {
+            cluster.fork()
+        }
+
+        cluster.on('exit', worker => {
+            console.log('Worker', worker.process.pid, 'died', new Date().toLocaleString())
+            // cluster.fork()
+        })
+    }
+    else {
+        createServer(PORT)
+        console.log(`WORKER PID: ${process.pid}`);
+    }
+}
+else {
+    console.log(`${args.argv.mode} mode in port ${PORT}`);
+    createServer(PORT)
+}

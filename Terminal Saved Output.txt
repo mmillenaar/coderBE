@@ -1,0 +1,175 @@
+Last login: Wed Nov  9 13:50:31 on ttys001
+
+---> NODEMON FORK
+
+mat@MacBook-Air-de-Matias coderBE % npm start
+
+> coderbe@1.0.0 start
+> nodemon src/server.js
+
+[nodemon] 2.0.19
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,json
+[nodemon] starting `node src/server.js`
+fork mode in port 8080
+Server listening at port: 8080
+^C%
+
+---> NODEMON CLUSTER
+
+mat@MacBook-Air-de-Matias coderBE % npm start -- -m cluster
+
+> coderbe@1.0.0 start
+> nodemon src/server.js -m cluster
+
+[nodemon] 2.0.19
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,json
+[nodemon] starting `node src/server.js -m cluster`
+cluster mode
+Master 12838 is running
+WORKER PID: 12839
+Server listening at port: 8080
+WORKER PID: 12840
+Server listening at port: 8080
+WORKER PID: 12841
+Server listening at port: 8080
+WORKER PID: 12842
+Server listening at port: 8080
+^C
+
+---> FOREVER
+
+mat@MacBook-Air-de-Matias coderBE % forever start src/server.js
+warn:    --minUptime not set. Defaulting to: 1000ms
+warn:    --spinSleepTime not set. Your script will exit if it does not stay up for at least 1000ms
+info:    Forever processing file: src/server.js
+(node:12846) Warning: Accessing non-existent property 'padLevels' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12846) Warning: Accessing non-existent property 'padLevels' of module exports inside circular dependency
+mat@MacBook-Air-de-Matias coderBE % forever list
+(node:12849) Warning: Accessing non-existent property 'padLevels' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12849) Warning: Accessing non-existent property 'padLevels' of module exports inside circular dependency
+info:    Forever processes running
+data:        uid  command                                 script        forever pid   id logfile                      uptime
+data:    [0] 4AMN /usr/local/Cellar/node/18.11.0/bin/node src/server.js 12847   12848    /Users/mat/.forever/4AMN.log 0:0:0:8.155
+mat@MacBook-Air-de-Matias coderBE % ps aux | pgrep node
+12847
+12848
+mat@MacBook-Air-de-Matias coderBE % ps 12847 12848
+  PID   TT  STAT      TIME COMMAND
+12847   ??  Ss     0:00.52 /usr/local/Cellar/node/18.11.0/bin/node /usr/local/lib/node_modules/forever/bin/monitor src/server.js
+12848   ??  S      0:01.71 /usr/local/Cellar/node/18.11.0/bin/node /Users/mat/Desktop/Programacion/CODERHOUSE/BackEnd/coderBE/src/server.js
+mat@MacBook-Air-de-Matias coderBE % forever stopall
+(node:12872) Warning: Accessing non-existent property 'padLevels' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12872) Warning: Accessing non-existent property 'padLevels' of module exports inside circular dependency
+info:    Forever stopped processes:
+data:        uid  command                                 script        forever pid   id logfile                      uptime
+data:    [0] 4AMN /usr/local/Cellar/node/18.11.0/bin/node src/server.js 12847   12848    /Users/mat/.forever/4AMN.log 0:0:3:38.75800000000001
+mat@MacBook-Air-de-Matias coderBE % forever list
+(node:12873) Warning: Accessing non-existent property 'padLevels' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12873) Warning: Accessing non-existent property 'padLevels' of module exports inside circular dependency
+info:    No forever processes running
+
+---> PM2
+
+mat@MacBook-Air-de-Matias coderBE % pm2 start src/server.js --name="serverFork" --watch -- -p 8081
+[PM2] Starting /Users/mat/Desktop/Programacion/CODERHOUSE/BackEnd/coderBE/src/server.js in fork_mode (1 instance)
+[PM2] Done.
+┌─────┬───────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id  │ name          │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├─────┼───────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0   │ serverFork    │ default     │ 1.0.0   │ fork    │ 12913    │ 0s     │ 0    │ online    │ 0%       │ 19.0mb   │ mat      │ enabled  │
+└─────┴───────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+mat@MacBook-Air-de-Matias coderBE % pm2 start src/server.js --name="serverCluster" --watch -i 3 -- -p 8082
+[PM2] Starting /Users/mat/Desktop/Programacion/CODERHOUSE/BackEnd/coderBE/src/server.js in cluster_mode (3 instances)
+[PM2] Done.
+┌─────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id  │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├─────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 1   │ serverCluster    │ default     │ 1.0.0   │ cluster │ 12942    │ 0s     │ 0    │ online    │ 18%      │ 40.9mb   │ mat      │ enabled  │
+│ 2   │ serverCluster    │ default     │ 1.0.0   │ cluster │ 12943    │ 0s     │ 0    │ online    │ 14%      │ 39.1mb   │ mat      │ enabled  │
+│ 3   │ serverCluster    │ default     │ 1.0.0   │ cluster │ 12945    │ 0s     │ 0    │ online    │ 6%       │ 26.2mb   │ mat      │ enabled  │
+│ 0   │ serverFork       │ default     │ 1.0.0   │ fork    │ 12913    │ 39s    │ 0    │ online    │ 0%       │ 89.5mb   │ mat      │ enabled  │
+└─────┴──────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+mat@MacBook-Air-de-Matias coderBE % pm2 list
+┌─────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id  │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├─────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 1   │ serverCluster    │ default     │ 1.0.0   │ cluster │ 12942    │ 11s    │ 0    │ online    │ 0%       │ 84.2mb   │ mat      │ enabled  │
+│ 2   │ serverCluster    │ default     │ 1.0.0   │ cluster │ 12943    │ 11s    │ 0    │ online    │ 0%       │ 83.7mb   │ mat      │ enabled  │
+│ 3   │ serverCluster    │ default     │ 1.0.0   │ cluster │ 12945    │ 11s    │ 0    │ online    │ 0%       │ 83.7mb   │ mat      │ enabled  │
+│ 0   │ serverFork       │ default     │ 1.0.0   │ fork    │ 12913    │ 50s    │ 0    │ online    │ 0%       │ 89.8mb   │ mat      │ enabled  │
+└─────┴──────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+mat@MacBook-Air-de-Matias coderBE % pm2 delete all
+[PM2] Applying action deleteProcessId on app [all](ids: [ 0, 1, 2, 3 ])
+[PM2] [serverCluster](2) ✓
+[PM2] [serverCluster](1) ✓
+[PM2] [serverFork](0) ✓
+[PM2] [serverCluster](3) ✓
+┌─────┬───────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id  │ name      │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+└─────┴───────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+mat@MacBook-Air-de-Matias coderBE % pm2 list
+┌─────┬───────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id  │ name      │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+└─────┴───────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+
+---> NGINX
+
+mat@MacBook-Air-de-Matias coderBE % pm2 start src/server.js --name="server8082" --watch -- -p 8082
+[PM2] Starting /Users/mat/Desktop/Programacion/CODERHOUSE/BackEnd/coderBE/src/server.js in fork_mode (1 instance)
+[PM2] Done.
+┌─────┬───────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id  │ name          │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├─────┼───────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0   │ server8082    │ default     │ 1.0.0   │ fork    │ 13574    │ 0s     │ 0    │ online    │ 0%       │ 14.7mb   │ mat      │ enabled  │
+└─────┴───────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+mat@MacBook-Air-de-Matias coderBE % pm2 start src/server.js --name="server8083" --watch -- -p 8083
+[PM2] Starting /Users/mat/Desktop/Programacion/CODERHOUSE/BackEnd/coderBE/src/server.js in fork_mode (1 instance)
+[PM2] Done.
+┌─────┬───────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id  │ name          │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├─────┼───────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0   │ server8082    │ default     │ 1.0.0   │ fork    │ 13574    │ 8s     │ 0    │ online    │ 0%       │ 114.6mb  │ mat      │ enabled  │
+│ 1   │ server8083    │ default     │ 1.0.0   │ fork    │ 13587    │ 0s     │ 0    │ online    │ 0%       │ 6.2mb    │ mat      │ enabled  │
+└─────┴───────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+mat@MacBook-Air-de-Matias coderBE % pm2 start src/server.js --name="server8084" --watch -- -p 8084
+[PM2] Starting /Users/mat/Desktop/Programacion/CODERHOUSE/BackEnd/coderBE/src/server.js in fork_mode (1 instance)
+[PM2] Done.
+┌─────┬───────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id  │ name          │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├─────┼───────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0   │ server8082    │ default     │ 1.0.0   │ fork    │ 13574    │ 15s    │ 0    │ online    │ 0%       │ 83.2mb   │ mat      │ enabled  │
+│ 1   │ server8083    │ default     │ 1.0.0   │ fork    │ 13587    │ 7s     │ 0    │ online    │ 0%       │ 106.5mb  │ mat      │ enabled  │
+│ 2   │ server8084    │ default     │ 1.0.0   │ fork    │ 13599    │ 0s     │ 0    │ online    │ 0%       │ 19.9mb   │ mat      │ enabled  │
+└─────┴───────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+mat@MacBook-Air-de-Matias coderBE % pm2 start src/server.js --name="server8085" --watch -- -p 8085
+[PM2] Starting /Users/mat/Desktop/Programacion/CODERHOUSE/BackEnd/coderBE/src/server.js in fork_mode (1 instance)
+[PM2] Done.
+┌─────┬───────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id  │ name          │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├─────┼───────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0   │ server8082    │ default     │ 1.0.0   │ fork    │ 13574    │ 23s    │ 0    │ online    │ 0%       │ 83.3mb   │ mat      │ enabled  │
+│ 1   │ server8083    │ default     │ 1.0.0   │ fork    │ 13587    │ 15s    │ 0    │ online    │ 0%       │ 86.3mb   │ mat      │ enabled  │
+│ 2   │ server8084    │ default     │ 1.0.0   │ fork    │ 13599    │ 8s     │ 0    │ online    │ 0%       │ 120.4mb  │ mat      │ enabled  │
+│ 3   │ server8085    │ default     │ 1.0.0   │ fork    │ 13611    │ 0s     │ 0    │ online    │ 0%       │ 6.1mb    │ mat      │ enabled  │
+└─────┴───────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+mat@MacBook-Air-de-Matias coderBE % pm2 start src/server.js --name="server8080" --watch -- -p 8080
+[PM2] Starting /Users/mat/Desktop/Programacion/CODERHOUSE/BackEnd/coderBE/src/server.js in fork_mode (1 instance)
+[PM2] Done.
+┌─────┬───────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id  │ name          │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├─────┼───────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 4   │ server8080    │ default     │ 1.0.0   │ fork    │ 13632    │ 0s     │ 0    │ online    │ 0%       │ 8.8mb    │ mat      │ enabled  │
+│ 0   │ server8082    │ default     │ 1.0.0   │ fork    │ 13574    │ 71s    │ 0    │ online    │ 0%       │ 85.9mb   │ mat      │ enabled  │
+│ 1   │ server8083    │ default     │ 1.0.0   │ fork    │ 13587    │ 63s    │ 0    │ online    │ 0%       │ 88.8mb   │ mat      │ enabled  │
+│ 2   │ server8084    │ default     │ 1.0.0   │ fork    │ 13599    │ 55s    │ 0    │ online    │ 0%       │ 90.3mb   │ mat      │ enabled  │
+│ 3   │ server8085    │ default     │ 1.0.0   │ fork    │ 13611    │ 47s    │ 0    │ online    │ 0%       │ 84.5mb   │ mat      │ enabled  │
+└─────┴───────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+mat@MacBook-Air-de-Matias coderBE %
