@@ -5,6 +5,7 @@ import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import cluster from 'cluster'
 import os from 'os'
+import compression from 'compression'
 
 import { Server as HttpServer } from 'http'
 import { Server as Socket } from 'socket.io'
@@ -21,6 +22,8 @@ import homeRouter from './routes/home.js'
 import logoutRouter from './routes/users/logout.js'
 import processInfoRouter from './routes/processInfo/processInfo.js'
 import randomsApiRouter from './routes/api/randoms.js'
+import routeLogger from './middlewares/routeLogger.js'
+import logger from './config/logger.js'
 
 
 const app = express()
@@ -31,6 +34,7 @@ const io = new Socket(httpServer)
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 // app.use(express.static('public'))
+// app.use(compression())
 
 
 app.engine('handlebars', engine())
@@ -59,14 +63,19 @@ io.on('connection', async socket => {
     }
 })
 
-app.use('/api/products', productsApiRouter)
-app.use('/api/products-test', productsTestApiRouter)
-app.use('/login', loginRouter)
-app.use('/register', registerRouter)
-app.use('/logout', logoutRouter)
-app.use('/info', processInfoRouter)
-app.use('/api/randoms', randomsApiRouter)
-app.use(homeRouter)
+app.use('/api/products', routeLogger, productsApiRouter)
+app.use('/api/products-test', routeLogger, productsTestApiRouter)
+app.use('/login', routeLogger, loginRouter)
+app.use('/register', routeLogger, registerRouter)
+app.use('/logout', routeLogger, logoutRouter)
+app.use('/info', compression(), routeLogger, processInfoRouter)
+app.use('/api/randoms', routeLogger, randomsApiRouter)
+app.use( homeRouter)
+
+app.get('/*', (req, res) => {
+    logger.warn('Method %s requested in route %O is unexistent', req.method, req.originalUrl)
+    res.send(`Method ${req.method} requested in route ${req.originalUrl} is unexistent`)
+})
 
 const args = yargs(hideBin(process.argv))
 args

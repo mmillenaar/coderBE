@@ -1,5 +1,6 @@
 import { Router } from "express"
 import productsApi from "../../api/products.api.js"
+import logger from "../../config/logger.js"
 
 const validate = (req, res, next) => {
     if (req.body.title && req.body.price > 0 && req.body.thumbnail) {
@@ -30,7 +31,7 @@ productsApiRouter
             return res.send(await productsApi.getAll())
         }
         catch(err) {
-            console.log(err);
+            logger.error(err)
         }
     });
 
@@ -42,7 +43,7 @@ productsApiRouter
             return res.send(requestedProduct)
         }
         catch (err) {
-            console.log(err)
+            logger.error(err)
         }
     })
     .put(validate, async (req, res) => {
@@ -56,7 +57,7 @@ productsApiRouter
             return res.send(await productsApi.getAll())
         }
         catch(err) {
-            console.log(err);
+            logger.error(err)
         }
     })
     .delete(async (req, res) => {
@@ -65,7 +66,7 @@ productsApiRouter
             return res.send(await productsApi.getAll())
         }
         catch (err) {
-            console.log(err);
+            logger.error(err)
         }
     })
 
