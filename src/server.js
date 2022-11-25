@@ -89,7 +89,7 @@ args
     })
     .argv
 
-const PORT = args.argv.port
+const PORT = args.argv.port || 8080
 const createServer = (port) => {
     const server = httpServer.listen(port, () => {
         console.log(`Server listening at port: ${httpServer.address().port}`)
