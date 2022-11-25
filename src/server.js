@@ -89,33 +89,40 @@ args
     })
     .argv
 
-const PORT = args.argv.port || 8080
-const createServer = (port) => {
-    const server = httpServer.listen(port, () => {
-        console.log(`Server listening at port: ${httpServer.address().port}`)
-    })
-    server.on("error", error => console.error(`Error in server ${error}`))
-}
+const PORT = process.env.PORT || 8080
+const server = httpServer.listen(PORT, () => {
+    console.log(`Server listening at port: ${httpServer.address().port}`);
+})
+server.on("error", error => console.error(`Error in server ${error}`))
 
-if (args.argv.mode === 'cluster') {
-    if (cluster.isPrimary) {
-        console.log(`${args.argv.mode} mode`);
-        console.log(`Master ${process.pid} is running`);
-        for (let i = 0; i < os.cpus().length; i++) {
-            cluster.fork()
-        }
+// const PORT = args.argv.port
 
-        cluster.on('exit', worker => {
-            console.log('Worker', worker.process.pid, 'died', new Date().toLocaleString())
-            // cluster.fork()
-        })
-    }
-    else {
-        createServer(PORT)
-        console.log(`WORKER PID: ${process.pid}`);
-    }
-}
-else {
-    console.log(`${args.argv.mode} mode in port ${PORT}`);
-    createServer(PORT)
-}
+// const createServer = (port) => {
+//     const server = httpServer.listen(port, () => {
+//         console.log(`Server listening at port: ${httpServer.address().port}`)
+//     })
+//     server.on("error", error => console.error(`Error in server ${error}`))
+// }
+
+// if (args.argv.mode === 'cluster') {
+//     if (cluster.isPrimary) {
+//         console.log(`${args.argv.mode} mode`);
+//         console.log(`Master ${process.pid} is running`);
+//         for (let i = 0; i < os.cpus().length; i++) {
+//             cluster.fork()
+//         }
+
+//         cluster.on('exit', worker => {
+//             console.log('Worker', worker.process.pid, 'died', new Date().toLocaleString())
+//             // cluster.fork()
+//         })
+//     }
+//     else {
+//         createServer(PORT)
+//         console.log(`WORKER PID: ${process.pid}`);
+//     }
+// }
+// else {
+//     console.log(`${args.argv.mode} mode in port ${PORT}`);
+//     createServer(PORT)
+// }
