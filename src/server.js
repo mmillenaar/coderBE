@@ -1,15 +1,42 @@
 import express from 'express'
 import dotenv from 'dotenv'
-import productsRouter from './routes/products.route.js'
-import cartsRouter from './routes/carts.route.js'
+import { engine } from 'express-handlebars'
+import session from 'express-session'
+
+import productsRouter from './routes/products/products.js'
+import cartsRouter from './routes/carts/carts.js'
+import { passportMiddleware, passportSessionHandler } from './middlewares/passport.middleware.js'
+import loginRouter from './routes/users/login.js'
+import registerRouter from './routes/users/register.js'
+import logoutRouter from './routes/users/logout.js'
+import homeRouter from './routes/web/home.js'
 
 const app = express()
 dotenv.config()
+app.engine('handlebars', engine())
+app.set('view engine', 'handlebars')
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+app.use(session({
+    secret: 'secret',
+    resave: false,
+    saveUninitialized: false,
+    rolling: true,
+    cookie: {
+        maxAge: 600000
+    }
+}))
+app.use(passportMiddleware)
+app.use(passportSessionHandler)
+
 app.use('/api/products', productsRouter)
 app.use('/api/carts', cartsRouter)
+app.use('/login', loginRouter)
+app.use('/register', registerRouter)
+app.use('/logout', logoutRouter)
+app.use(homeRouter)
 
 // Error handler
 app.all('*', (req, res, next) => {

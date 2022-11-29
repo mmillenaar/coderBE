@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Register user</h1>
+        <br>
+        <form action="/register" method="post" autocomplete="off">
+            <div class="form-group">
+                <label for="name">Please enter your name</label>
+                <input id="name" class="form-control" type="text" name="name" required>
+                <br/>
+                <label for="address">Please enter your address</label>
+                <input id="address" class="form-control" type="text" name="address" required>
+                <br/>
+                <label for="age">Please enter your age</label>
+                <input id="age" class="form-control" type="text" name="age" required>
+                <br/>
+                <!-- <label for="phone">Please enter your phone number</label>
+                <input id="phone" class="form-control" type="tel" name="phone" required>
+                <br/> -->
+                <p style="color: red;">((Ver ultimas dos clases para foto y telefono!!!))</p>
+                <label for="email">Please enter your email</label>
+                <input id="email" class="form-control" type="email" name="email" required>
+                <br/>
+                <label for="password">Please enter your password</label>
+                <input id="password" class="form-control" type="password" name="password" required>
+            </div>
+            <button>Send</button>
+        </form>
+        <h2>Already registered? Please login
+            <a href="/login">
+                <button>HERE</button>
+            </a>
+        </h2>
+    </div>
+</body>
+</html>

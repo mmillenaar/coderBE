@@ -1,9 +1,12 @@
+import dotenv from 'dotenv'
+dotenv.config()
+
 export default {
     fileSystem: {
         path: './DB'
     },
     mongoDb: {
-        URL: 'mongodb+srv://root:root@cluster0.k4xvimf.mongodb.net/?retryWrites=true&w=majority',
+        URL: process.env.MONGOURL,
         options: {
             useNewUrlParser: true,
             useUnifiedTopology: true,

@@ -1,0 +1,16 @@
+<div class="login-greetings">
+    <h1>
+        Welcome {{user.name}}!
+        <button onclick="location.href='/logout'">
+            Log out
+        </button>
+    </h1>
+    <br/>
+    <h4>Your info:</h4>
+    <ul>
+        <li>Address: {{user.address}}</li>
+        <li>Age: {{user.age}}</li>
+        <li>Email: {{user.email}}</li>
+    </ul>
+    <button onclick="location.href='/api/products'">All products</button>
+</div>

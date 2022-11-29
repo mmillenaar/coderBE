@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <div class="container">
+        <h1>User login</h1>
+        <br>
+        <form action="/login" method="post" autocomplete="off">
+            <div class="form-group">
+                <label for="email">Enter your email</label>
+                <input id="email" class="form-control" type="email" name="email" required>
+                <label for="password">Enter your password</label>
+                <input id="password" class="form-control" type="password" name="password" required>
+            </div>
+            <button>Send</button>
+        </form>
+        <h2>Not registered? Please do so
+            <a href="/register">
+                <button>HERE</button>
+            </a>
+        </h2>
+    </div>
+</body>
+</html>

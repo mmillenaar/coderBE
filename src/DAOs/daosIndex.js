@@ -1,8 +1,10 @@
 import dotenv from 'dotenv'
+import UsersDao from './users/usersDao.js'
 dotenv.config()
 
 let productsDao
 let cartsDao
+let usersDao
 
 switch (process.env.PERS) {
     case 'fs':
@@ -27,7 +29,8 @@ switch (process.env.PERS) {
 
         productsDao = new MongoDbProductsDao()
         cartsDao = new MongoDbCartsDao()
+        usersDao = new UsersDao()
         break
 }
 
-export { productsDao, cartsDao }
+export { productsDao, cartsDao, usersDao }
