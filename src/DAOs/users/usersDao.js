@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt'
+import logger from '../../config/logger.config.js';
 import MongoDbContainer from "../../containers/mongoDb.container.js";
 import usersSchema from "../../models/users.schema.js";
 
@@ -37,6 +38,7 @@ export default class UsersDao extends MongoDbContainer {
             }
         }
         catch (err) {
+            logger.error(err)
             throw err
         }
     }

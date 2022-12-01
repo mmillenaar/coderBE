@@ -1,5 +1,6 @@
 import path from 'path'
 import passport from 'passport'
+import logger from '../config/logger.config.js'
 
 export const getRoot = (req, res) => {
     let userCart = req.user.cart.products
@@ -35,6 +36,7 @@ export const getLogout = (req, res) => {
     const name = req.user.name
     req.logout(err => {
         if (err) {
+            logger.error(err)
             throw err
         }
         else {

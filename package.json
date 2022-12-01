@@ -19,7 +19,8 @@
   },
   "homepage": "https://github.com/mmillenaar/coderBE#readme",
   "devDependencies": {
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.19",
+    "pino-pretty": "^9.1.1"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
@@ -31,6 +32,7 @@
     "mongoose": "^6.6.4",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "pino": "^8.7.0"
   }
 }

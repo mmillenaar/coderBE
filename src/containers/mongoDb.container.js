@@ -1,12 +1,14 @@
 import mongoose from 'mongoose'
 import config from "../config/db.config.js";
+import logger from '../config/logger.config.js';
 
 await mongoose.connect(config.mongoDb.URL, config.mongoDb.options,
     (err) => {
-    if(err) {
-        throw err
-    }
-    console.log('MongoDb connected');
+        if (err) {
+            logger.error(err)
+            throw err
+        }
+        logger.info('MongoDb connected');
     })
 
 export default class MongoDbContainer {
@@ -19,6 +21,7 @@ export default class MongoDbContainer {
             const allContent = await this.collection.find().select('-__v').lean()
             return allContent
         } catch (err) {
+            logger.error(err)
             throw new Error(`Error accessing database: ${err}`)
         }
     }
@@ -33,6 +36,7 @@ export default class MongoDbContainer {
             }
         } catch (err) {
             err.status = 404
+            logger.error(err)
             throw err
         }
     }
@@ -47,6 +51,7 @@ export default class MongoDbContainer {
             }
         } catch (err) {
             err.status = 404
+            logger.error(err)
             throw err
         }
     }
@@ -56,6 +61,7 @@ export default class MongoDbContainer {
             const savedObject = await newObjectSchema.save()
             return this.getById(savedObject._id)
         } catch (err) {
+            logger.error(err)
             throw err
         }
     }
@@ -64,6 +70,7 @@ export default class MongoDbContainer {
             await this.collection.replaceOne({ _id: object.id }, object)
             return this.getById(object.id)
         } catch (err) {
+            logger.error(err)
             throw err
         }
     }
@@ -73,6 +80,7 @@ export default class MongoDbContainer {
             return this.getAll()
         } catch (err) {
             err.status = 404
+            logger.error(err)
             throw err
         }
     }
@@ -87,6 +95,7 @@ export default class MongoDbContainer {
             }
         }
         catch (err) {
+            logger.error(err)
             throw err
         }
     }

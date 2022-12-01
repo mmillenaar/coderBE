@@ -1,3 +1,4 @@
+import logger from "../../config/logger.config.js";
 import MongoDbContainer from "../../containers/mongoDb.container.js";
 import cartsSchema from "../../models/carts.schema.js";
 
@@ -30,6 +31,7 @@ export default class MongoDbCartsDao extends MongoDbContainer {
         }
         catch (err) {
             err.status = 400
+            logger.error(err)
             throw err
         }
     }

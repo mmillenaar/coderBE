@@ -2,6 +2,8 @@ import express from 'express'
 import dotenv from 'dotenv'
 import { engine } from 'express-handlebars'
 import session from 'express-session'
+import cluster from 'cluster'
+import os from 'os'
 
 import { passportMiddleware, passportSessionHandler } from './middlewares/passport.middleware.js'
 
@@ -12,6 +14,7 @@ import registerRouter from './routes/users/register.js'
 import logoutRouter from './routes/users/logout.js'
 import homeRouter from './routes/web/home.js'
 import userCartRouter from './routes/carts/userCart.js'
+import logger from './config/logger.config.js'
 
 const app = express()
 dotenv.config()
@@ -57,7 +60,32 @@ app.use((err, req, res, next) => {
 })
 
 const PORT = process.env.PORT || 8080
-const server = app.listen(PORT, () => {
-    console.log(`Server listening at port: ${server.address().port}`);
-})
-server.on("error", error => console.error(`Error in server: ${error}`))
+const createServer = (port) => {
+    const server = app.listen(port, () => {
+        logger.info(`Server listening at port: ${server.address().port}`)
+    })
+    server.on("error", error => logger.error(`Error in server ${error}`))
+}
+
+if (process.env.MODE === 'cluster') {
+    if (cluster.isPrimary) {
+        logger.info(`${process.env.MODE} mode`);
+        logger.info(`Master ${process.pid} is running`);
+        for (let i = 0; i < os.cpus().length; i++) {
+            cluster.fork()
+        }
+
+        cluster.on('exit', worker => {
+            logger.info('Worker', worker.process.pid, 'died', new Date().toLocaleString())
+            // cluster.fork()
+        })
+    }
+    else {
+        createServer(PORT)
+        logger.info(`WORKER PID: ${process.pid}`);
+    }
+}
+else {
+    logger.info(`${process.env.MODE} mode`);
+    createServer(PORT)
+}

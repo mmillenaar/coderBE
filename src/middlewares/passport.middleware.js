@@ -1,5 +1,6 @@
 import passport from 'passport'
 import { Strategy } from 'passport-local'
+import logger from '../config/logger.config.js'
 import { usersDao as usersApi } from '../DAOs/daosIndex.js'
 
 passport.use('login', new Strategy(
@@ -11,6 +12,7 @@ passport.use('login', new Strategy(
         }
         catch (err) {
             done(null, false, err)
+            logger.error(err)
             throw err
         }
     }
@@ -29,6 +31,7 @@ passport.use('register', new Strategy(
         }
         catch (err) {
             done(null, false, err)
+            logger.error(err)
             throw err
         }
     }
