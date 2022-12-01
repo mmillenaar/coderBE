@@ -2,7 +2,8 @@ import path from 'path'
 import passport from 'passport'
 
 export const getRoot = (req, res) => {
-    res.render(path.resolve('./views/pages/index.handlebars'), { user: req.user })
+    let userCart = req.user.cart.products
+    res.render(path.resolve('./views/pages/index.handlebars'), { user: req.user, userCart} )
 }
 export const getLogin = (req, res) => {
     const user = req.isAuthenticated()
@@ -31,12 +32,13 @@ export const getFailedRegister = (req, res) => {
     res.sendFile(path.resolve('./views/pages/failedregister.html'))
 }
 export const getLogout = (req, res) => {
+    const name = req.user.name
     req.logout(err => {
         if (err) {
             throw err
         }
         else {
-            res.render(path.resolve('./views/pages/logout.handlebars'), { name: req.user.name })
+            res.render(path.resolve('./views/pages/logout.handlebars'), { name: name })
         }
     });
 }

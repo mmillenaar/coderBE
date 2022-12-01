@@ -10,4 +10,11 @@
     <li>Price: {{price}}</li>
     <li>Stock: {{stock}}</li>
 </ul>
+<form action="/cart" method="post" autocomplete="off">
+    <input type="hidden" name="productId" value={{_id}}>
+    <input class="form-control" type="number" name="quantity" required>
+    <button>Update cart</button>
+</form>
 {{/each}}
+<br/>
+<button onclick="location.href='/'">Back to Home</button>

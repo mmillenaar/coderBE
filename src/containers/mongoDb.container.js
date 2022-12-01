@@ -36,14 +36,14 @@ export default class MongoDbContainer {
             throw err
         }
     }
-    async getByUsername(username) {
+    async getElementByValue(field, value) {
         try {
-            const foundObject = await this.collection.findOne({email: username}).select('-__v')
-            if (!foundObject) {
-                throw new Error(`Username ${username} not found in DB`)
+            const foundElement = await this.collection.findOne({ [field] : value}).select('-__v')
+            if (!foundElement) {
+                throw new Error(`${field} ${username} not found in DB`)
             }
             else {
-                return foundObject
+                return foundElement
             }
         } catch (err) {
             err.status = 404
@@ -76,11 +76,14 @@ export default class MongoDbContainer {
             throw err
         }
     }
-    async checkDuplicate(field, data) {
+    async checkIsDuplicate(field, value) {
         try {
-            const object = await this.collection.findOne({ [field]: data })
-            if (object) {
-                throw new Error(`${data} already exists in field ${field}`)
+            const element = await this.getElementByValue(field, value)
+            if (element) {
+                return true
+            }
+            else {
+                return false
             }
         }
         catch (err) {

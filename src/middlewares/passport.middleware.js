@@ -22,8 +22,10 @@ passport.use('register', new Strategy(
     },
     async (req, username, password, done) => {
         try {
-            const newUser = await usersApi.registerUser(req.body)
-            done(null, newUser)
+            const newUser = req.body
+            newUser.cart = { timestamp: Date.now(), products: [] }
+            const registeredUser = await usersApi.registerUser(newUser)
+            done(null, registeredUser)
         }
         catch (err) {
             done(null, false, err)

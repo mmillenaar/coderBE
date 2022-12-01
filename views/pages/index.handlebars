@@ -12,5 +12,20 @@
         <li>Age: {{user.age}}</li>
         <li>Email: {{user.email}}</li>
     </ul>
-    <button onclick="location.href='/api/products'">All products</button>
+    <br/>
+    <button onclick="location.href='/api/products'">See all products</button>
+    <br/>
+    <h4>You cart:</h4>
+    {{#each userCart}}
+    <br/>
+    <ul>
+        <h5>{{this.title}}</h5>
+        <img src={{this.thumbnail}} alt={{this.title}}>
+        <li>Description: {{this.description}}</li>
+        <li>Code: {{this.code}}</li>
+        <li>Price: {{this.price}}</li>
+        <li>Quantity: {{this.quantity}}</li>
+    </ul>
+    {{/each}}
+    <script type="module" src="./index.js"></script>
 </div>

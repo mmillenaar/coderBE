@@ -3,13 +3,15 @@ import dotenv from 'dotenv'
 import { engine } from 'express-handlebars'
 import session from 'express-session'
 
+import { passportMiddleware, passportSessionHandler } from './middlewares/passport.middleware.js'
+
 import productsRouter from './routes/products/products.js'
 import cartsRouter from './routes/carts/carts.js'
-import { passportMiddleware, passportSessionHandler } from './middlewares/passport.middleware.js'
 import loginRouter from './routes/users/login.js'
 import registerRouter from './routes/users/register.js'
 import logoutRouter from './routes/users/logout.js'
 import homeRouter from './routes/web/home.js'
+import userCartRouter from './routes/carts/userCart.js'
 
 const app = express()
 dotenv.config()
@@ -18,6 +20,7 @@ app.set('view engine', 'handlebars')
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use(express.static('public'))
 
 app.use(session({
     secret: 'secret',
@@ -33,6 +36,7 @@ app.use(passportSessionHandler)
 
 app.use('/api/products', productsRouter)
 app.use('/api/carts', cartsRouter)
+app.use('/cart', userCartRouter)
 app.use('/login', loginRouter)
 app.use('/register', registerRouter)
 app.use('/logout', logoutRouter)

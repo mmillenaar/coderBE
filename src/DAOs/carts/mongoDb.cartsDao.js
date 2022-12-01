@@ -19,7 +19,7 @@ export default class MongoDbCartsDao extends MongoDbContainer {
             const { products } = cart
             if (products) {
                 let newCartProducts = {
-                    cart: JSON.parse(products)
+                    products: JSON.parse(products)
                 }
                 const newCart = await super.saveObject(newCartProducts)
                 return newCart
@@ -37,7 +37,7 @@ export default class MongoDbCartsDao extends MongoDbContainer {
         const { products } = modifiedCart
         let requestedCart = await super.getById(id)
         JSON.parse(products).map(product => {
-            requestedCart.cart.push(product)
+            requestedCart.products.push(product)
         })
         requestedCart.timestamp = Date.now()
         const newCartProducts  = await super.modifyObject(requestedCart)
@@ -49,9 +49,9 @@ export default class MongoDbCartsDao extends MongoDbContainer {
     }
     async deleteProductFromCart(cartId, productId) {
         let requestedCart = await super.getById(cartId)
-        let filteredProducts = requestedCart.cart.filter(element => element.id !== productId)
-        requestedCart.cart.length = 0
-        filteredProducts.map(element => requestedCart.cart.push(element))
+        let filteredProducts = requestedCart.products.filter(element => element.id !== productId)
+        requestedCart.products.length = 0
+        filteredProducts.map(element => requestedCart.products.push(element))
         requestedCart.timestamp = Date.now()
         const newCartProducts  = await super.modifyObject(requestedCart)
         return newCartProducts
