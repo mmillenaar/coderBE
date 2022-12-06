@@ -1,31 +1,23 @@
 <div class="login-greetings">
     <h1>
         Welcome {{user.name}}!
-        <button onclick="location.href='/logout'">
-            Log out
-        </button>
     </h1>
+    <img src={{user.avatar}} alt="user avatar">
+    <br/>
+    <button onclick="location.href='/logout'">
+        Log out
+    </button>
     <br/>
     <h4>Your info:</h4>
     <ul>
         <li>Address: {{user.address}}</li>
         <li>Age: {{user.age}}</li>
+        <li>Phone: +{{user.countryCode}} {{user.phone}}</li>
         <li>Email: {{user.email}}</li>
     </ul>
     <br/>
     <button onclick="location.href='/api/products'">See all products</button>
     <br/>
-    <h4>You cart:</h4>
-    {{#each userCart}}
-    <br/>
-    <ul>
-        <h5>{{this.title}}</h5>
-        <img src={{this.thumbnail}} alt={{this.title}}>
-        <li>Description: {{this.description}}</li>
-        <li>Code: {{this.code}}</li>
-        <li>Price: {{this.price}}</li>
-        <li>Quantity: {{this.quantity}}</li>
-    </ul>
-    {{/each}}
-    <script type="module" src="./index.js"></script>
+    <button onclick="location.href='/cart'">My cart</button>
+    <script type="module" src="./JS/index.js"></script>
 </div>

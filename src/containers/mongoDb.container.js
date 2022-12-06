@@ -29,6 +29,7 @@ export default class MongoDbContainer {
         try {
             const foundObject = await this.collection.findById(id).select('-__v').lean()
             if (!foundObject) {
+                logger.error(`Object with id ${id} not found in DB`)
                 throw new Error()
             }
             else {
@@ -42,11 +43,8 @@ export default class MongoDbContainer {
     }
     async getElementByValue(field, value) {
         try {
-            const foundElement = await this.collection.findOne({ [field] : value}).select('-__v')
-            if (!foundElement) {
-                throw new Error(`${field} ${username} not found in DB`)
-            }
-            else {
+            const foundElement = await this.collection.findOne({ [field] : value}).select('-__v').lean()
+            if (foundElement) {
                 return foundElement
             }
         } catch (err) {

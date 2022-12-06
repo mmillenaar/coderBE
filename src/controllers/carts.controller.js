@@ -2,6 +2,8 @@ import path from "path";
 import { cartsDao as cartsApi } from "../DAOs/daosIndex.js";
 import { usersDao as usersApi } from "../DAOs/daosIndex.js";
 import { productsDao as productsApi } from "../DAOs/daosIndex.js"
+import { sendMailOnFinishOrder } from '../utils/sendMails.js'
+import { sendSMSOnFinishOrder, sendWPOnFinishOrder } from "../utils/sendMessages.js";
 
 export const getCarts = async (req, res, next) => {
     try {
@@ -51,12 +53,24 @@ export const deleteCartProduct = async (req, res, next) => {
         next(err)
     }
 }
+export const getUserCart = async (req, res, next) => {
+    try {
+        // const userCart = req.user.cart.products
+        let user = await usersApi.getUserByEmail(req.user.email)
+        const userCart = user.cart.products
+        res.render(path.resolve('./views/pages/userCart.handlebars'), {userCart})
+    }
+    catch (err) {
+        next(err)
+    }
+}
 export const postUserCart = async (req, res, next) => {
     try {
 
         //TODO: sumar cantidad en vez de updatear? ver como restar en otra vista
 
         let user = await usersApi.getUserByEmail(req.user.email)
+        user.id = user._id
         const requestedProduct = await productsApi.getProductById(req.body.productId)
         const { stock, ...newCartProduct } = requestedProduct
         newCartProduct.quantity = JSON.parse(req.body.quantity)
@@ -82,6 +96,27 @@ export const postUserCart = async (req, res, next) => {
         await usersApi.updateUser(user)
 
         res.sendFile(path.resolve('./views/pages/updatedCart.html'))
+    }
+    catch (err) {
+        next(err)
+    }
+}
+export const getFinishOrder = async (req, res, next) => {
+    try {
+        let user = await usersApi.getUserByEmail(req.user.email)
+        await sendMailOnFinishOrder(user)
+        let userPhoneNumber = `+${user.countryCode}${user.phone}`
+        await sendSMSOnFinishOrder(userPhoneNumber)
+        await sendWPOnFinishOrder(user)
+        const { cart, ...modifiedUser } = user
+        modifiedUser.id = modifiedUser._id
+        modifiedUser.cart = {
+            timestamp: Date.now(),
+            products: []
+        }
+        await usersApi.updateUser(modifiedUser)
+
+        res.sendFile(path.resolve('./views/pages/finishedOrder.html'))
     }
     catch (err) {
         next(err)
