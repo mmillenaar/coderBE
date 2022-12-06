@@ -42,7 +42,7 @@ export default class MongoDbProductsDao extends MongoDbContainer {
         let requestedProduct = await super.getById(id)
         const { title, description, code, thumbnail, price, stock } = modifiedProduct
         requestedProduct = {
-            id: requestedProduct.id,
+            id: requestedProduct._id,
             timestamp: Date.now(),
             title: title ? title : requestedProduct.title,
             description: description ? description : requestedProduct.description,

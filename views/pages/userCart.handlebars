@@ -1,0 +1,19 @@
+<div id="cart" class="cart__container">
+    <h4>You cart:</h4>
+    {{#each userCart}}
+        <ul>
+            <h5>{{title}}</h5>
+            <img src={{thumbnail}} alt={{title}}>
+            <li>Description: {{description}}</li>
+            <li>Code: {{code}}</li>
+            <li>Price: {{price}}</li>
+            <li>Quantity: {{quantity}}</li>
+        </ul>
+    {{/each}}
+    <button class="cart__submit-button" type="submit">Submit cart</button>
+    <br/>
+    <button onclick="location.href='/api/products'">Back to products</button>
+    <br/>
+    <button onclick="location.href='/'">Back to Home</button>
+</div>
+<script src="./JS/cart.js"></script>

@@ -3,7 +3,7 @@ import productsSchema from './products.schema.js'
 
 const cartsSchema = new mongoose.Schema({
     timestamp: { type: Date, default: Date.now(), require: true },
-    cart: { type: [productsSchema], require: true }
+    products: { type: [productsSchema], require: true }
 })
 
 export default cartsSchema

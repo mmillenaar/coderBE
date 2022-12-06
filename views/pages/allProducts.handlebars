@@ -1,0 +1,22 @@
+<h1>All products</h1>
+{{#each allProducts}}
+<br/>
+<ul>
+    <h2>Product {{_id}}</h2>
+    <img src={{thumbnail}} alt={{title}}>
+    <li>Title: {{title}}</li>
+    <li>Description: {{description}}</li>
+    <li>Code: {{code}}</li>
+    <li>Price: {{price}}</li>
+    <li>Stock: {{stock}}</li>
+</ul>
+<form action="/cart" method="post" autocomplete="off">
+    <input type="hidden" name="productId" value={{_id}}>
+    <input class="form-control" type="number" name="quantity" required>
+    <button>Update cart</button>
+</form>
+{{/each}}
+<br/>
+<button onclick="location.href='/cart'">Check and submit cart</button>
+<br/>
+<button onclick="location.href='/'">Back to Home</button>
