@@ -1,6 +1,6 @@
 import passport from 'passport'
 import { Strategy } from 'passport-local'
-import usersApi, { authenticateUser, registerUser } from '../api/users.api.js'
+import usersApi, { authenticateUser, registerUser } from '../business/users.api.js'
 
 passport.use('login', new Strategy(
     { usernameField: 'email' },
@@ -20,7 +20,6 @@ passport.use('register', new Strategy(
     },
     async (req, username, password, done) => {
         try {
-            console.log(req.body);
             const newUser = await registerUser(req.body)
             done(null, newUser)
         }

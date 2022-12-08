@@ -1,4 +1,4 @@
-import MongoDbContainer from "../containers/mongodb.container.js";
+import MongoDbContainer from "../persistence/mongodb.container.js";
 import usersSchema from "../models/users.schema.js";
 import bcrypt from 'bcrypt'
 
@@ -18,7 +18,6 @@ export const authenticateUser = async (email, password) => {
     return user
 }
 export const registerUser = async (userData) => {
-    console.log(userData);
     await usersApi.checkDuplicate('email', userData.email)
     userData.password = createHash(userData.password)
     const user = await usersApi.save(userData)
