@@ -3,15 +3,19 @@ class memoryContainer {
         this.elements = []
     }
 
+    getAll() {
+        return [...this.elements]
+    }
     getById(id) {
         const elem = this.elements.find(elem => elem.id == id)
         return elem || { error: `element not found` }
     }
-
-    getAll() {
-        return [...this.elements]
+    getElementByValue(field, value) {
+        const elem = this.elements.find(elem => elem[`${field}`] == value)
+        if (elem) {
+            return elem
+        }
     }
-
     save(elem) {
         let newId
         if (this.elements.length == 0) {
@@ -24,10 +28,9 @@ class memoryContainer {
         this.elements.push(newElem)
         return newElem
     }
-
-    update(elem) {
-        const newElem = { ...elem, id: Number(elem.id) }
-        const index = this.elements.findIndex(p => p.id == elem.id)
+    update(elem, id) {
+        const newElem = { ...elem, id: Number(id) }
+        const index = this.elements.findIndex(p => p.id == id)
         if (index == -1) {
             return { error: `element not found` }
         } else {
@@ -35,7 +38,6 @@ class memoryContainer {
             return newElem
         }
     }
-
     deleteById(id) {
         const index = this.elements.findIndex(elem => elem.id == id)
         if (index == -1) {
@@ -44,9 +46,17 @@ class memoryContainer {
             return this.elements.splice(index, 1)
         }
     }
-
     deleteAll() {
         this.elements = []
+    }
+    checkIsDuplicate(field, value) {
+        const element = this.getElementByValue(field, value)
+        if (element) {
+            return true
+        }
+        else {
+            return false
+        }
     }
 }
 

@@ -1,8 +1,6 @@
 import express from 'express'
 import session from 'express-session'
 import dotenv from 'dotenv'
-import yargs from 'yargs'
-import { hideBin } from 'yargs/helpers'
 import cluster from 'cluster'
 import os from 'os'
 import compression from 'compression'
@@ -24,6 +22,7 @@ import processInfoRouter from './routes/processInfo/processInfo.js'
 import randomsApiRouter from './routes/api/randoms.js'
 import routeLogger from './middlewares/routeLogger.js'
 import logger from './config/logger.js'
+import { MODE, PERS, PORT } from './config/args.js'
 
 
 const app = express()
@@ -77,45 +76,33 @@ app.get('/*', (req, res) => {
     res.send(`Method ${req.method} requested in route ${req.originalUrl} is unexistent`)
 })
 
-const args = yargs(hideBin(process.argv))
-args
-    .default({
-        port: 8080,
-        mode: 'fork',
-    })
-    .alias({
-        p: 'port',
-        m: 'mode'
-    })
-    .argv
-
-const PORT = args.argv.port
 const createServer = (port) => {
     const server = httpServer.listen(port, () => {
-        console.log(`Server listening at port: ${httpServer.address().port}`)
+        logger.info(`Server listening at port: ${httpServer.address().port}`)
     })
     server.on("error", error => console.error(`Error in server ${error}`))
 }
 
-if (args.argv.mode === 'cluster') {
+if (MODE === 'cluster') {
     if (cluster.isPrimary) {
-        console.log(`${args.argv.mode} mode`);
-        console.log(`Master ${process.pid} is running`);
+        logger.info(`${MODE} mode`);
+        logger.info(`Master ${process.pid} is running`);
         for (let i = 0; i < os.cpus().length; i++) {
             cluster.fork()
         }
 
         cluster.on('exit', worker => {
-            console.log('Worker', worker.process.pid, 'died', new Date().toLocaleString())
+            logger.info('Worker', worker.process.pid, 'died', new Date().toLocaleString())
             // cluster.fork()
         })
     }
     else {
         createServer(PORT)
-        console.log(`WORKER PID: ${process.pid}`);
+        logger.info(`WORKER PID: ${process.pid}`);
     }
 }
 else {
-    console.log(`${args.argv.mode} mode in port ${PORT}`);
+    logger.info(`${MODE} mode in port ${PORT}`);
+    logger.info(`${PERS} persistence`);
     createServer(PORT)
 }

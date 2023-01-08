@@ -18,6 +18,13 @@ class FsContainer {
         const searchedElement = elements.find(e => e.id == id)
         return searchedElement
     }
+    async getElementByValue(field, value) {
+        const elements = await this.getAll()
+        const searchedElement = elements.find(e => e[field] == value)
+        if (searchedElement) {
+            return searchedElement
+        }
+    }
     async save(elem) {
         const elements = await this.getAll()
         let newId
@@ -37,7 +44,6 @@ class FsContainer {
     }
     async update(elem, id) {
         const elements = await this.getAll()
-        console.log(elem);
         const searchedIndex = elements.findIndex(e => e.id == id)
         if (searchedIndex == -1) {
             throw new Error(`Error updating: could not find id:${id}`)
@@ -63,12 +69,20 @@ class FsContainer {
             throw new Error(`Error while deleting: ${error}`)
         }
     }
-
     async deleteAll() {
         try {
             await fs.writeFile(this.path, JSON.stringify([], null, 2))
         } catch (error) {
             throw new Error(`Error while deleting all: ${error}`)
+        }
+    }
+    async checkIsDuplicate(field, value) {
+        const searchedElement = await this.getElementByValue(field, value)
+        if (searchedElement) {
+            return true
+        }
+        else {
+            return false
         }
     }
 }

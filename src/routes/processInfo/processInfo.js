@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getProcessInfo } from "../../controllers/processInfoControllers/processInfoController.js";
+import { getProcessInfo } from "../../controllers/processInfo.controller.js";
 
 const processInfoRouter = new Router()
 

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getFailedLogin, getLogin, postLogin } from "../../controllers/userControllers/userControllers.js";
+import { getFailedLogin, getLogin, postLogin } from "../../controllers/user.controller.js";
 
 const loginRouter = new Router()
 

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getLogout } from "../../controllers/userControllers/userControllers.js";
+import { getLogout } from "../../controllers/user.controller.js";
 
 const logoutRouter = new Router()
 

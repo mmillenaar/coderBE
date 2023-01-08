@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getFailedRegister, getLogin, getRegister, postLogin, postRegister } from "../../controllers/userControllers/userControllers.js";
+import { getFailedRegister, getLogin, getRegister, postLogin, postRegister } from "../../controllers/user.controller.js";
 
 const registerRouter = new Router()
 

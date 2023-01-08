@@ -1,5 +1,5 @@
-import messagesApi from "../../api/messages.api.js"
 import logger from "../../config/logger.js"
+import messagesApi from "../../services/messages.api.js"
 
 export default async function socketMessagesConfiguration(socket, sockets) {
     const chatData = await messagesApi.getAll()

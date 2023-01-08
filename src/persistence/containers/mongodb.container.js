@@ -1,13 +1,5 @@
-import config from '../config/dbs.js';
 import mongoose from 'mongoose'
-
-await mongoose.connect(config.mongoDb.URL, config.mongoDb.options,
-    (err) => {
-    if(err) {
-        console.log(err);
-    }
-    console.log('MongoDb connected');
-    })
+import logger from '../../config/logger.js'
 
 export default class MongoDbContainer {
     constructor(collectionName, schema) {
@@ -16,7 +8,7 @@ export default class MongoDbContainer {
 
     async getAll() {
         try {
-            const allContent = await this.collection.find().select('-__v')
+            const allContent = await this.collection.find().select('-__v').lean()
             return allContent
         } catch (err) {
             throw new Error(`Error accessing database: ${err}`)
@@ -24,7 +16,7 @@ export default class MongoDbContainer {
     }
     async getById(id) {
         try {
-            const foundObject = await this.collection.findById(id).select('-__v')
+            const foundObject = await this.collection.findById(id).select('-__v').lean()
             if (!foundObject) {
                 throw new Error()
             }
@@ -36,17 +28,15 @@ export default class MongoDbContainer {
             throw err
         }
     }
-    async getByUsername(username) {
+    async getElementByValue(field, value) {
         try {
-            const foundObject = await this.collection.findOne({email: username}).select('-__v')
-            if (!foundObject) {
-                throw new Error(`Username ${username} not found in DB`)
-            }
-            else {
-                return foundObject
+            const foundElement = await this.collection.findOne({ [field] : value}).select('-__v').lean()
+            if (foundElement) {
+                return foundElement
             }
         } catch (err) {
             err.status = 404
+            logger.error(err)
             throw err
         }
     }
@@ -59,10 +49,10 @@ export default class MongoDbContainer {
             throw err
         }
     }
-    async update(object) {
+    async update(object, id) {
         try {
-            await this.collection.replaceOne({ _id: object.id }, object)
-            return this.getById(object.id)
+            await this.collection.replaceOne({ _id: id }, object)
+            return this.getById(id)
         } catch (err) {
             throw err
         }
@@ -85,14 +75,18 @@ export default class MongoDbContainer {
             throw err
         }
     }
-    async checkDuplicate(field, data) {
+    async checkIsDuplicate(field, value) {
         try {
-            const object = await this.collection.findOne({ [field]: data })
-            if (object) {
-                throw new Error(`${data} already exists in field ${field}`)
+            const element = await this.getElementByValue(field, value)
+            if (element) {
+                return true
+            }
+            else {
+                return false
             }
         }
         catch (err) {
+            logger.error(err)
             throw err
         }
     }

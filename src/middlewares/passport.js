@@ -1,18 +1,21 @@
 import passport from 'passport'
 import { Strategy } from 'passport-local'
-import usersApi, { authenticateUser, registerUser } from '../business/users.api.js'
+import logger from '../config/logger.js'
+import usersApi, { authenticateUser, registerUser } from '../services/users.api.js'
 
 passport.use('login', new Strategy(
     { usernameField: 'email' },
     async (username, password, done) => {
-    try {
-        const user = await authenticateUser(username, password)
-        done(null, user)
+        try {
+            const user = await authenticateUser(username, password)
+            done(null, user)
+        }
+        catch (err) {
+            logger.error(err)
+            done(null, false, err)
+        }
     }
-    catch (err) {
-        done(null, false, err)
-    }
-}))
+))
 passport.use('register', new Strategy(
     {
         passReqToCallback: true,
@@ -24,6 +27,7 @@ passport.use('register', new Strategy(
             done(null, newUser)
         }
         catch (err) {
+            logger.error(err)
             done(null, false, err)
         }
     }))
