@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs'
-import config from '../config/db.config.js'
+import config from '../../config/db.config.js'
+import logger from '../../config/logger.config.js'
 
 export default class FsContainer {
     constructor(filePath) {
@@ -18,7 +19,7 @@ export default class FsContainer {
     async getById(id) {
         try {
             const fileContent = await this.getAll()
-            let searchedIndex = fileContent.findIndex(element => element.id == id)
+            let searchedIndex = fileContent.findIndex(element => element.id == parseInt(id))
             if (searchedIndex < 0) {
                 throw new Error(`Id:${id} not found in ${JSON.stringify(this.filePath)}`)
             }
@@ -28,6 +29,20 @@ export default class FsContainer {
         }
         catch (err) {
             err.status = 404
+            logger.error(err)
+            throw err
+        }
+    }
+    async getElementByValue(field, value) {
+        try {
+            const elements = await this.getAll()
+            const searchedElement = elements.find(e => e[field] == value)
+            if (searchedElement) {
+                return searchedElement
+            }
+        }
+        catch (err) {
+            logger.error(err)
             throw err
         }
     }
@@ -47,6 +62,7 @@ export default class FsContainer {
             return fileContent
         }
         catch (err) {
+            logger.error(err)
             throw err
         }
     }
@@ -59,13 +75,14 @@ export default class FsContainer {
             return fileContent[objectIndex]
         }
         catch(err) {
+            logger.error(err)
             throw err
         }
     }
     async deleteById(id) {
         try {
             const fileContent = await this.getAll()
-            const filteredList = fileContent.filter(element => element.id !== id)
+            const filteredList = fileContent.filter(element => element.id !== parseInt(id))
             if (filteredList.length == fileContent.length) {
                 throw new Error(`Id:${id} not found in ${JSON.stringify(this.filePath)}`)
             } else {
@@ -78,7 +95,23 @@ export default class FsContainer {
         }
         catch (err) {
             err.status = 404
+            logger.error(err)
             throw err;
+        }
+    }
+    async checkIsDuplicate(field, value) {
+        try {
+            const element = await this.getElementByValue(field, value)
+            if (element) {
+                return true
+            }
+            else {
+                return false
+            }
+        }
+        catch (err) {
+            logger.error(err)
+            throw err
         }
     }
 }

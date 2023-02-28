@@ -1,4 +1,5 @@
 import admin from 'firebase-admin'
+import { query, where, getDocs } from "firebase/firestore";
 import config from "../config/db.config.js";
 
 admin.initializeApp({
@@ -39,6 +40,16 @@ export default class FirebaseContainer {
             throw err
         }
     }
+    async getElementByValue(field, value) {
+        try {
+            const q = query(this.collection, where(`${field}`, "==", `${value}`));
+            const querySnapshot = await getDocs(q)
+            return querySnapshot
+        }
+        catch (err) {
+            throw err
+        }
+    }
     async saveObject(object) {
         try {
             const savedObject = await this.collection.add(object)
@@ -70,6 +81,20 @@ export default class FirebaseContainer {
         }
         catch (err) {
             err.status = 404
+            throw err
+        }
+    }
+    async checkIsDuplicate(field, value) {
+        try {
+            const element = await this.getElementByValue(field, value)
+            if (element) {
+                return true
+            }
+            else {
+                return false
+            }
+        }
+        catch (err) {
             throw err
         }
     }

@@ -7,13 +7,13 @@ import os from 'os'
 
 import { passportMiddleware, passportSessionHandler } from './middlewares/passport.middleware.js'
 
-import productsRouter from './routes/products/products.js'
-import cartsRouter from './routes/carts/carts.js'
-import loginRouter from './routes/users/login.js'
-import registerRouter from './routes/users/register.js'
-import logoutRouter from './routes/users/logout.js'
-import homeRouter from './routes/web/home.js'
-import userCartRouter from './routes/carts/userCart.js'
+import productsRouter from './routes/products/products.route.js'
+import cartsRouter from './routes/carts/carts.route.js'
+import loginRouter from './routes/users/login.route.js'
+import registerRouter from './routes/users/register.route.js'
+import logoutRouter from './routes/users/logout.route.js'
+import homeRouter from './routes/web/home.route.js'
+import userCartRouter from './routes/carts/userCart.route.js'
 import logger from './config/logger.config.js'
 
 const app = express()

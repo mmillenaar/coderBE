@@ -1,7 +1,7 @@
 import passport from 'passport'
 import { Strategy } from 'passport-local'
 import logger from '../config/logger.config.js'
-import { usersDao as usersApi } from '../DAOs/daosIndex.js'
+import usersApi from '../services/users.api.js'
 import { sendMailOnRegister } from '../utils/sendMails.js'
 
 passport.use('login', new Strategy(
@@ -12,8 +12,8 @@ passport.use('login', new Strategy(
             done(null, user)
         }
         catch (err) {
-            done(null, false, err)
             logger.error(err)
+            done(null, false, err)
         }
     }
 ))
@@ -31,8 +31,8 @@ passport.use('register', new Strategy(
             done(null, registeredUser)
         }
         catch (err) {
-            done(null, false, err)
             logger.error(err)
+            done(null, false, err)
         }
     }
 ))

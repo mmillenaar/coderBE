@@ -1,5 +1,6 @@
 import path from 'path'
-import { productsDao as productsApi } from "../DAOs/daosIndex.js"
+import logger from '../config/logger.config.js'
+import productsApi from '../services/products.api.js'
 
 export const getProducts = async (req, res, next) => {
     try {
@@ -13,22 +14,25 @@ export const getProducts = async (req, res, next) => {
         }
     }
     catch (err) {
+        logger.error(err)
         next(err)
     }
 }
 export const postProduct = async (req, res, next) => {
     try {
-        res.send(await productsApi.saveProduct(req.body))
+        res.send(await productsApi.postProduct(req.body))
     }
     catch (err) {
+        logger.error(err)
         next(err)
     }
 }
 export const putProduct = async (req, res, next) => {
     try {
-        res.send(await productsApi.modifyProduct(req.params.id, req.body))
+        res.send(await productsApi.putProduct(req.params.id, req.body))
     }
     catch (err) {
+        logger.error(err)
         next(err)
     }
 }
@@ -37,6 +41,7 @@ export const deleteProduct = async (req, res, next) => {
         res.send(await productsApi.deleteProductById(req.params.id))
     }
     catch (err) {
+        logger.error(err)
         next(err)
     }
 }

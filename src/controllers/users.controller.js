@@ -1,10 +1,11 @@
 import path from 'path'
 import passport from 'passport'
 import logger from '../config/logger.config.js'
+import usersApi from '../services/users.api.js'
 
-export const getRoot = (req, res) => {
-    let userCart = req.user.cart.products
-    res.render(path.resolve('./views/pages/index.handlebars'), { user: req.user, userCart} )
+export const getRoot = async (req, res) => {
+    const user = await usersApi.getRoot(req.user)
+    res.render(path.resolve('./views/pages/index.handlebars'), { user: user })
 }
 export const getLogin = (req, res) => {
     const user = req.isAuthenticated()

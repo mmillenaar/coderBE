@@ -2,7 +2,7 @@
 {{#each allProducts}}
 <br/>
 <ul>
-    <h2>Product {{_id}}</h2>
+    <h2>Product {{id}}</h2>
     <img src={{thumbnail}} alt={{title}}>
     <li>Title: {{title}}</li>
     <li>Description: {{description}}</li>
@@ -11,7 +11,7 @@
     <li>Stock: {{stock}}</li>
 </ul>
 <form action="/cart" method="post" autocomplete="off">
-    <input type="hidden" name="productId" value={{_id}}>
+    <input type="hidden" name="productId" value={{id}}>
     <input class="form-control" type="number" name="quantity" required>
     <button>Update cart</button>
 </form>
